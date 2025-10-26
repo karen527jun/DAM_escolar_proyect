@@ -1,0 +1,7 @@
+{
+  "name": "proyecto_final_DAM",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
