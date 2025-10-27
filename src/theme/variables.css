@@ -1,2 +1,22 @@
+@import "tailwindcss";
 /* For information on how to create your own theme, please see:
 http://ionicframework.com/docs/theming/ */
+
+:root {
+  --ion-color-secondary: #006600;
+  --ion-color-secondary-rgb: 0, 102, 0;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #005a00;
+  --ion-color-secondary-tint: #1a751a;
+
+  --ion-color-primary: #2e48fd;
+  --ion-color-primary-rgb: rgb(48, 75, 253);
+  --ion-color-primary-contrast: #eef4fa;
+  --ion-color-primary-contrast-rgb: rgb(238, 244, 250);
+  --ion-color-primary-shade: #1f3099;
+  --ion-color-primary-tint: #5067ff;
+
+  
+}
+
