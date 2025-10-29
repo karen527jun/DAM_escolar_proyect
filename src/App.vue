@@ -1,7 +1,7 @@
 <template>
   <ion-app>
     <ion-split-pane content-id="main-content">
-      <ion-menu content-id="main-content" type="overlay">
+      <ion-menu v-if="loggedIn" content-id="main-content" type="overlay">
         <ion-content color="primary">
           <div class="p-4">
             <ion-note class="!text-white">hi@ionicframework.com</ion-note>
@@ -135,7 +135,7 @@ const appPages = [
   },
 ];
 const labels = ["Family", "Friends", "Notes", "Work", "Travel", "Reminders"];
-
+const loggedIn = ref(true);
 const path = window.location.pathname.split("folder/")[1];
 if (path !== undefined) {
   selectedIndex.value = appPages.findIndex(
