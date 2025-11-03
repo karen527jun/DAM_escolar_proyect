@@ -1,28 +1,59 @@
 <template>
   <ion-app>
     <ion-split-pane content-id="main-content">
-      <ion-menu content-id="main-content" type="overlay">
-        <ion-content>
-          <ion-list id="inbox-list">
-            <ion-list-header>Inbox</ion-list-header>
-            <ion-note>hi@ionicframework.com</ion-note>
+      <ion-menu
+        v-if="loggedIn"
+        class="w-[400px]"
+        content-id="main-content"
+        type="overlay"
+      >
+        <ion-content color="primary">
+          <div class="p-4">
+            <ion-note class="!text-white">hi@ionicframework.com</ion-note>
 
-            <ion-menu-toggle :auto-hide="false" v-for="(p, i) in appPages" :key="i">
-              <ion-item @click="selectedIndex = i" router-direction="root" :router-link="p.url" lines="none" :detail="false" class="hydrated" :class="{ selected: selectedIndex === i }">
-                <ion-icon aria-hidden="true" slot="start" :ios="p.iosIcon" :md="p.mdIcon"></ion-icon>
-                <ion-label>{{ p.title }}</ion-label>
+            <ion-menu-toggle
+              :auto-hide="false"
+              v-for="(p, i) in appPages"
+              :key="i"
+            >
+              <ion-item
+                color="primary"
+                @click="selectedIndex = i"
+                router-direction="root"
+                :router-link="p.url"
+                lines="none"
+                :detail="false"
+                class="hydrated"
+                :class="{ selected: selectedIndex === i }"
+              >
+                <ion-icon
+                  aria-hidden="true"
+                  slot="start"
+                  :ios="p.iosIcon"
+                  :md="p.mdIcon"
+                ></ion-icon>
+                <ion-label class="ml-4">{{ p.title }}</ion-label>
               </ion-item>
             </ion-menu-toggle>
-          </ion-list>
+          </div>
 
-          <ion-list id="labels-list">
+          <!-- <ion-list id="labels-list">
             <ion-list-header>Labels</ion-list-header>
 
-            <ion-item v-for="(label, index) in labels" lines="none" :key="index">
-              <ion-icon aria-hidden="true" slot="start" :ios="bookmarkOutline" :md="bookmarkSharp"></ion-icon>
+            <ion-item
+              v-for="(label, index) in labels"
+              lines="none"
+              :key="index"
+            >
+              <ion-icon
+                aria-hidden="true"
+                slot="start"
+                :ios="bookmarkOutline"
+                :md="bookmarkSharp"
+              ></ion-icon>
               <ion-label>{{ label }}</ion-label>
             </ion-item>
-          </ion-list>
+          </ion-list> -->
         </ion-content>
       </ion-menu>
       <ion-router-outlet id="main-content"></ion-router-outlet>
@@ -44,8 +75,9 @@ import {
   IonNote,
   IonRouterOutlet,
   IonSplitPane,
-} from '@ionic/vue';
-import { ref } from 'vue';
+  useIonRouter,
+} from "@ionic/vue";
+import { ref } from "vue";
 import {
   archiveOutline,
   archiveSharp,
@@ -61,58 +93,69 @@ import {
   trashSharp,
   warningOutline,
   warningSharp,
-} from 'ionicons/icons';
+} from "ionicons/icons";
 
+const router = useIonRouter();
 const selectedIndex = ref(0);
 const appPages = [
   {
-    title: 'Inbox',
-    url: '/folder/Inbox',
+    title: "Usuarios",
+    url: "usuarios",
     iosIcon: mailOutline,
     mdIcon: mailSharp,
   },
   {
-    title: 'Outbox',
-    url: '/folder/Outbox',
+    title: "Materias",
+    url: "materias",
     iosIcon: paperPlaneOutline,
     mdIcon: paperPlaneSharp,
   },
   {
-    title: 'Favorites',
-    url: '/folder/Favorites',
+    title: "Grados",
+    url: "grados",
     iosIcon: heartOutline,
     mdIcon: heartSharp,
   },
   {
-    title: 'Archived',
-    url: '/folder/Archived',
+    title: "Secciones",
+    url: "secciones",
     iosIcon: archiveOutline,
     mdIcon: archiveSharp,
   },
   {
-    title: 'Trash',
-    url: '/folder/Trash',
+    title: "Profesores",
+    url: "profesores",
     iosIcon: trashOutline,
     mdIcon: trashSharp,
   },
   {
-    title: 'Spam',
-    url: '/folder/Spam',
+    title: "Asistencia",
+    url: "asistencia",
+    iosIcon: warningOutline,
+    mdIcon: warningSharp,
+  },
+  {
+    title: "Estudiantes",
+    url: "estudiantes",
     iosIcon: warningOutline,
     mdIcon: warningSharp,
   },
 ];
-const labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
 
-const path = window.location.pathname.split('folder/')[1];
+const labels = ["Family", "Friends", "Notes", "Work", "Travel", "Reminders"];
+const loggedIn = ref(true);
+const path = window.location.pathname.split("folder/")[1];
 if (path !== undefined) {
-  selectedIndex.value = appPages.findIndex((page) => page.title.toLowerCase() === path.toLowerCase());
+  selectedIndex.value = appPages.findIndex(
+    (page) => page.title.toLowerCase() === path.toLowerCase()
+  );
 }
+const navegarRuta = () => {};
 </script>
 
 <style scoped>
 ion-menu ion-content {
-  --background: var(--ion-item-background, var(--ion-background-color, #fff));
+  --background: var(--ion-item-background, var(--ion-background-color));
 }
 
 ion-menu.md ion-content {
@@ -151,7 +194,7 @@ ion-menu.md ion-list#labels-list ion-list-header {
 
   margin-bottom: 18px;
 
-  color: #757575;
+  color: white;
 
   min-height: 26px;
 }
@@ -167,11 +210,11 @@ ion-menu.md ion-item.selected {
 }
 
 ion-menu.md ion-item.selected ion-icon {
-  color: var(--ion-color-primary);
+  color: white;
 }
 
 ion-menu.md ion-item ion-icon {
-  color: #616e7e;
+  color: white;
 }
 
 ion-menu.md ion-item ion-label {
@@ -198,7 +241,7 @@ ion-menu.ios ion-item {
 }
 
 ion-menu.ios ion-item.selected ion-icon {
-  color: var(--ion-color-primary);
+  color: white !important;
 }
 
 ion-menu.ios ion-item ion-icon {
@@ -228,6 +271,6 @@ ion-note {
 }
 
 ion-item.selected {
-  --color: var(--ion-color-primary);
+  --color: white;
 }
 </style>
