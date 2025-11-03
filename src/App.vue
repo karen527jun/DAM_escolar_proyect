@@ -1,7 +1,12 @@
 <template>
   <ion-app>
     <ion-split-pane content-id="main-content">
-      <ion-menu v-if="loggedIn" content-id="main-content" type="overlay">
+      <ion-menu
+        v-if="loggedIn"
+        class="w-[400px]"
+        content-id="main-content"
+        type="overlay"
+      >
         <ion-content color="primary">
           <div class="p-4">
             <ion-note class="!text-white">hi@ionicframework.com</ion-note>
@@ -70,6 +75,7 @@ import {
   IonNote,
   IonRouterOutlet,
   IonSplitPane,
+  useIonRouter,
 } from "@ionic/vue";
 import { ref } from "vue";
 import {
@@ -89,51 +95,53 @@ import {
   warningSharp,
 } from "ionicons/icons";
 
+const router = useIonRouter();
 const selectedIndex = ref(0);
 const appPages = [
   {
     title: "Usuarios",
-    url: "/folder/usuarios",
+    url: "usuarios",
     iosIcon: mailOutline,
     mdIcon: mailSharp,
   },
   {
     title: "Materias",
-    url: "/folder/materias",
+    url: "materias",
     iosIcon: paperPlaneOutline,
     mdIcon: paperPlaneSharp,
   },
   {
     title: "Grados",
-    url: "/folder/grupos",
+    url: "grados",
     iosIcon: heartOutline,
     mdIcon: heartSharp,
   },
   {
     title: "Secciones",
-    url: "/folder/secciones",
+    url: "secciones",
     iosIcon: archiveOutline,
     mdIcon: archiveSharp,
   },
   {
     title: "Profesores",
-    url: "/folder/profesores",
+    url: "profesores",
     iosIcon: trashOutline,
     mdIcon: trashSharp,
   },
   {
     title: "Asistencia",
-    url: "/folder/asistencia",
+    url: "asistencia",
     iosIcon: warningOutline,
     mdIcon: warningSharp,
   },
   {
     title: "Estudiantes",
-    url: "/folder/Spam",
+    url: "estudiantes",
     iosIcon: warningOutline,
     mdIcon: warningSharp,
   },
 ];
+
 const labels = ["Family", "Friends", "Notes", "Work", "Travel", "Reminders"];
 const loggedIn = ref(true);
 const path = window.location.pathname.split("folder/")[1];
@@ -142,6 +150,7 @@ if (path !== undefined) {
     (page) => page.title.toLowerCase() === path.toLowerCase()
   );
 }
+const navegarRuta = () => {};
 </script>
 
 <style scoped>

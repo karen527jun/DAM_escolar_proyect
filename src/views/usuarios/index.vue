@@ -16,13 +16,36 @@
         </ion-toolbar>
       </ion-header>
 
-      <div id="container"></div>
+      <div
+        id=""
+        class="p-10 flex flex-col items-center justify-center min-h-[80vh]"
+      >
+        <div>
+          <h1 class="text-center !font-bold !mb-10">Usuarios</h1>
+          <div class="flex flex-col items-center justify-center gap-10">
+            <ion-button>Crear nuevo usuario</ion-button>
+            <ion-item>
+              <ion-input></ion-input>
+            </ion-item>
+            <CardDataComponent :headers="headers" :data="data">
+              <template #acciones>
+                <div class="flex gap-2">
+                  <ion-button color="primary">Editar</ion-button>
+                  <ion-button color="danger">Eliminar</ion-button>
+                </div>
+              </template>
+            </CardDataComponent>
+          </div>
+        </div>
+      </div>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
 import {
+  IonItem,
+  IonInput,
   IonButtons,
   IonContent,
   IonHeader,
@@ -30,7 +53,62 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  IonButton,
 } from "@ionic/vue";
+import CardDataComponent from "@/components/CardDataComponent.vue";
+
+const headers = [
+  {
+    field: "id",
+    header: "ID",
+  },
+  {
+    field: "nombres",
+    header: "Nombres",
+  },
+  {
+    field: "apellidos",
+    header: "Apellidos",
+  },
+  {
+    field: "correo",
+    header: "Correo",
+  },
+  {
+    field: "rol",
+    header: "Rol",
+  },
+  {
+    field: "acciones",
+    header: "Acciones",
+  },
+];
+const data = [
+  {
+    id: 1,
+    nombres: "Karen Adriana ",
+    apellidos: "Martínez Rivera",
+    correo: "ucorreosuuuuuuperlargsssssssssssssssssssso@gmail.com",
+    rol: "Rol",
+    acciones: "Acciones",
+  },
+  {
+    id: 1,
+    nombres: "Nombres",
+    apellidos: "Apellidos",
+    correo: "Correo",
+    rol: "Rol",
+    acciones: "Acciones",
+  },
+  {
+    id: 1,
+    nombres: "Nombres",
+    apellidos: "Apellidos",
+    correo: "Correo",
+    rol: "Rol",
+    acciones: "Acciones",
+  },
+];
 </script>
 
 <style scoped>

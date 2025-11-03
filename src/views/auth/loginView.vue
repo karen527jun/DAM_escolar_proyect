@@ -45,13 +45,15 @@
               </ion-item>
               <ion-item>
                 <ion-input
-                  placeholder="Correo"
+                  placeholder="Contraseña"
                   type="password"
                   label="Contraseña"
                   labelPlacement="floating"
                 ></ion-input>
               </ion-item>
-              <a href="" class="text-end">Olvide mi contraseña</a>
+              <small class="text-end underline text-blue-500"
+                ><a href="">Olvide mi contraseña</a></small
+              >
               <ion-button color="primary" shape="round"
                 >Iniciar sesión</ion-button
               >

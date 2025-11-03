@@ -1,7 +1,10 @@
 @import "tailwindcss";
 /* For information on how to create your own theme, please see:
 http://ionicframework.com/docs/theming/ */
-
+.button_crear{
+  @apply bg-blue-500;
+  
+}
 :root {
   --ion-color-secondary: #006600;
   --ion-color-secondary-rgb: 0, 102, 0;
@@ -19,4 +22,6 @@ http://ionicframework.com/docs/theming/ */
 
   
 }
+
+
 
