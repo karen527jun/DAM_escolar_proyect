@@ -3,13 +3,13 @@
     <ion-split-pane content-id="main-content">
       <ion-menu
         v-if="loggedIn"
-        class="w-[400px]"
+        class="md:max-w-[300px]"
         content-id="main-content"
         type="overlay"
       >
-        <ion-content color="primary">
+        <ion-content>
           <div class="p-4">
-            <ion-note class="!text-white">hi@ionicframework.com</ion-note>
+            <ion-note class="">hi@ionicframework.com</ion-note>
 
             <ion-menu-toggle
               :auto-hide="false"
@@ -17,7 +17,6 @@
               :key="i"
             >
               <ion-item
-                color="primary"
                 @click="selectedIndex = i"
                 router-direction="root"
                 :router-link="p.url"
@@ -140,6 +139,12 @@ const appPages = [
     iosIcon: warningOutline,
     mdIcon: warningSharp,
   },
+  {
+    title: "Especialidades",
+    url: "especialidades",
+    iosIcon: warningOutline,
+    mdIcon: warningSharp,
+  },
 ];
 
 const labels = ["Family", "Friends", "Notes", "Work", "Travel", "Reminders"];
@@ -155,7 +160,6 @@ const navegarRuta = () => {};
 
 <style scoped>
 ion-menu ion-content {
-  --background: var(--ion-item-background, var(--ion-background-color));
 }
 
 ion-menu.md ion-content {
@@ -179,7 +183,7 @@ ion-menu.md ion-note {
 }
 
 ion-menu.md ion-list#inbox-list {
-  border-bottom: 1px solid var(--ion-background-color-step-150, #d7d8da);
+  border-bottom: 1px solid var();
 }
 
 ion-menu.md ion-list#inbox-list ion-list-header {
@@ -194,8 +198,6 @@ ion-menu.md ion-list#labels-list ion-list-header {
 
   margin-bottom: 18px;
 
-  color: white;
-
   min-height: 26px;
 }
 
@@ -206,15 +208,14 @@ ion-menu.md ion-item {
 }
 
 ion-menu.md ion-item.selected {
-  --background: rgba(var(--ion-color-primary-rgb), 0.14);
 }
 
 ion-menu.md ion-item.selected ion-icon {
-  color: white;
+  color: black;
 }
 
 ion-menu.md ion-item ion-icon {
-  color: white;
+  color: black;
 }
 
 ion-menu.md ion-item ion-label {
@@ -241,7 +242,6 @@ ion-menu.ios ion-item {
 }
 
 ion-menu.ios ion-item.selected ion-icon {
-  color: white !important;
 }
 
 ion-menu.ios ion-item ion-icon {
@@ -266,11 +266,9 @@ ion-menu.ios ion-note {
 ion-note {
   display: inline-block;
   font-size: 16px;
-
-  color: var(--ion-color-medium-shade);
 }
 
 ion-item.selected {
-  --color: white;
+  --color: black;
 }
 </style>

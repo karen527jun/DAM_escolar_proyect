@@ -16,13 +16,32 @@
         </ion-toolbar>
       </ion-header>
 
-      <div id="container"></div>
+      <div>
+        <h1 class="text-center !font-bold !mb-10">Crear nuevo usuario</h1>
+        <div>
+          <ion-item>
+            <ion-input
+              placeholder="Username"
+              type="text"
+              label="Username"
+            ></ion-input>
+          </ion-item>
+          <div class="mt-10 flex gap-10 justify-center">
+            <ion-button color="primary">Crear</ion-button>
+            <ion-button color="danger" @click="$router.push('/usuarios')"
+              >Cancelar</ion-button
+            >
+          </div>
+        </div>
+      </div>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
 import {
+  IonItem,
+  IonInput,
   IonButtons,
   IonContent,
   IonHeader,
@@ -30,6 +49,7 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  IonButton,
 } from "@ionic/vue";
 </script>
 
