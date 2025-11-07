@@ -31,9 +31,13 @@
               <ion-input></ion-input>
             </ion-item>
             <CardDataComponent :headers="headers" :data="data">
-              <template #acciones>
+              <template v-slot:acciones="{ item }: profesores">
                 <div class="flex gap-2 mb-5">
-                  <ion-button color="primary" fill="outline">
+                  <ion-button
+                    @click="editarProfesor(item.id)"
+                    color="primary"
+                    fill="outline"
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       height="24px"
@@ -97,6 +101,8 @@ import {
 import CardDataComponent from "@/components/CardDataComponent.vue";
 import profesoresService from "@/services/profesor.services.js";
 import { onMounted, ref } from "vue";
+import profesores from "@/interfaces/profesores.ts";
+import router from "@/router";
 const headers = [
   {
     field: "id",
@@ -137,14 +143,15 @@ const data = ref([]);
 
 const getData = async () => {
   try {
-    const res = await profesoresService.getProfesores();
-    console.log(res);
+    const res: profesores = await profesoresService.getProfesores();
     data.value = res.data;
   } catch (error) {
     console.log(error);
   }
 };
-
+const editarProfesor = (id: number) => {
+  router.push({ name: "editarProfesor", params: { id: id } });
+};
 onMounted(() => {
   getData();
 });

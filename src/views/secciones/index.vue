@@ -10,13 +10,29 @@
     </ion-header>
 
     <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">{{ $route.params.id }}</ion-title>
-        </ion-toolbar>
-      </ion-header>
-
-      <div id="container"></div>
+      <div>
+        <div>
+          <h1 class="text-center !text-4xl !font-bold !mb-10 text-gray-500">
+            Secciones
+          </h1>
+          <div class="flex flex-col items-center justify-center gap-10">
+            <ion-button class="h-[60px]" @click="$router.push('/crear-seccion')"
+              >Crear nueva Sección</ion-button
+            >
+            <ion-item>
+              <ion-input></ion-input>
+            </ion-item>
+            <CardDataComponent :headers="headers" :data="data">
+              <template #acciones>
+                <div class="flex gap-2">
+                  <ion-button color="primary">Editar</ion-button>
+                  <ion-button color="danger">Eliminar</ion-button>
+                </div>
+              </template>
+            </CardDataComponent>
+          </div>
+        </div>
+      </div>
     </ion-content>
   </ion-page>
 </template>
@@ -30,7 +46,25 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  IonItem,
+  IonInput,
+  IonButton,
 } from "@ionic/vue";
+import CardDataComponent from "@/components/CardDataComponent.vue";
+
+import { ref } from "vue";
+
+const headers = [
+  {
+    field: "id_especialidad",
+    header: "ID",
+  },
+  {
+    field: "nombre_especialidad",
+    header: "Especialidad",
+  },
+];
+const data = ref([]);
 </script>
 
 <style scoped>

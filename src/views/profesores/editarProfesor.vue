@@ -149,7 +149,7 @@
               v-if="v$.password.$model !== secondPassword"
               class="text-[12px] text-red-500 ml-5"
             >
-              La contraseña debe coincidir
+              La contraseña es diferente
             </span>
           </div>
           <div class="my-10 flex flex-col gap-5 justify-center mx-5">

@@ -35,6 +35,10 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import ('../views/secciones/index.vue')
   },
   {
+    path: '/crear-seccion',
+    component: () => import ('../views/secciones/CrearSecciones.vue')
+  },
+  {
     path: '/profesores',
     component: () => import ('../views/profesores/index.vue')
   },
@@ -43,8 +47,22 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import ('../views/profesores/crearProfesor.vue')
   },
   {
+    path: '/editar-profesor/:id',
+    name: 'editarProfesor',
+    component: () => import ('../views/profesores/editarProfesor.vue')
+  },
+  {
     path: '/Asistencia',
     component: () => import ('../views/asistencia/index.vue')
+  },
+  {
+    path: '/crear-asistencia',
+    component: () => import ('../views/asistencia/crearAsistencia.vue')
+  },
+  {
+    path: '/editar-asistencia/:id',
+    name: 'editarAsistencia',
+    component: () => import ('../views/asistencia/editarAsistencia.vue')
   },
   {
     path: '/estudiantes',
