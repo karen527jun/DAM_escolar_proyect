@@ -1,6 +1,7 @@
 <template>
   <ion-page>
-    <ion-header :translucent="true">
+    <LoaderComponent v-if="loader"></LoaderComponent>
+    <ion-header :translucent="true" class="h-fit">
       <ion-toolbar class="h-[80px] flex items-center px-10">
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
@@ -12,23 +13,23 @@
     <ion-content :fullscreen="true">
       <ion-header collapse="condense">
         <ion-toolbar>
-          <ion-title size="large">Materias</ion-title>
+          <ion-title size="large">{{ $route.params.id }}</ion-title>
         </ion-toolbar>
       </ion-header>
-
-      <div
-        class="p-10 flex flex-col items-center justify-center min-h-[80vh]"
-      >
+      <div>
         <div>
-          <h1 class="text-center !font-bold !mb-10">Materias</h1>
-
+          <h1 class="text-center !text-4xl !font-bold !mb-10 text-gray-500">
+            Especialidades
+          </h1>
           <div class="flex flex-col items-center justify-center gap-10">
-            <ion-button color="primary">Crear nueva materia</ion-button>
-
+            <ion-button
+              class="h-[60px]"
+              @click="$router.push('/crear-especialidad')"
+              >Crear nueva especialidad</ion-button
+            >
             <ion-item>
-              <ion-input placeholder="Buscar materia..."></ion-input>
+              <ion-input></ion-input>
             </ion-item>
-
             <CardDataComponent :headers="headers" :data="data">
               <template #acciones>
                 <div class="flex gap-2">
@@ -58,35 +59,36 @@ import {
   IonButton,
 } from "@ionic/vue";
 import CardDataComponent from "@/components/CardDataComponent.vue";
-
+import especialidadesServices from "@/services/especialidad.services.js";
+import { onMounted, ref } from "vue";
+import LoaderComponent from "@/components/LoaderComponent.vue";
 const headers = [
-  { field: "id", header: "ID" },
-  { field: "nombre", header: "Nombre" },
-  { field: "descripcion", header: "Descripción" },
-  { field: "duracion", header: "Duración (meses)" },
-  { field: "acciones", header: "Acciones" },
+  {
+    field: "id_especialidad",
+    header: "ID",
+  },
+  {
+    field: "nombre_especialidad",
+    header: "Especialidad",
+  },
 ];
+const data = ref([]);
+const loader = ref(false);
+const getEspecialidad = async () => {
+  try {
+    loader.value = true;
+    const res = await especialidadesServices.getEspecialidades();
+    data.value = res.data;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    loader.value = false;
+  }
+};
 
-const data = [
-  {
-    id: 1,
-    nombre: "Matemáticas",
-    descripcion: "Cálculo, álgebra y geometría básica",
-    duracion: 6,
-  },
-  {
-    id: 2,
-    nombre: "Lenguaje y Literatura",
-    descripcion: "Gramática, redacción y comprensión lectora",
-    duracion: 5,
-  },
-  {
-    id: 3,
-    nombre: "Ciencias Naturales",
-    descripcion: "Biología, física y química básica",
-    duracion: 7,
-  },
-];
+onMounted(() => {
+  getEspecialidad();
+});
 </script>
 
 <style scoped>

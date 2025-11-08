@@ -1,7 +1,7 @@
 <template>
   <ion-page>
     <ion-header :translucent="true">
-      <ion-toolbar color="primary" class="h-[80px] flex items-center px-10">
+      <ion-toolbar class="h-[80px] flex items-center">
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
@@ -23,7 +23,11 @@
         <div>
           <h1 class="text-center !font-bold !mb-10">Usuarios</h1>
           <div class="flex flex-col items-center justify-center gap-10">
-            <ion-button>Crear nuevo usuario</ion-button>
+            <ion-button
+              class="h-[60px]"
+              @click="$router.push('/crear-usuarios')"
+              >Crear nuevo usuario</ion-button
+            >
             <ion-item>
               <ion-input></ion-input>
             </ion-item>
@@ -90,7 +94,6 @@ const data = [
     apellidos: "Martínez Rivera",
     correo: "ucorreosuuuuuuperlargsssssssssssssssssssso@gmail.com",
     rol: "Rol",
-    acciones: "Acciones",
   },
   {
     id: 1,
@@ -98,7 +101,6 @@ const data = [
     apellidos: "Apellidos",
     correo: "Correo",
     rol: "Rol",
-    acciones: "Acciones",
   },
   {
     id: 1,
@@ -106,7 +108,6 @@ const data = [
     apellidos: "Apellidos",
     correo: "Correo",
     rol: "Rol",
-    acciones: "Acciones",
   },
 ];
 </script>
