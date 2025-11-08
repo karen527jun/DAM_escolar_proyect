@@ -12,17 +12,42 @@
     <ion-content :fullscreen="true">
       <ion-header collapse="condense">
         <ion-toolbar>
-          <ion-title size="large">{{ $route.params.id }}</ion-title>
+          <ion-title size="large">Materias</ion-title>
         </ion-toolbar>
       </ion-header>
 
-      <div id="container"></div>
+      <div
+        class="p-10 flex flex-col items-center justify-center min-h-[80vh]"
+      >
+        <div>
+          <h1 class="text-center !font-bold !mb-10">Materias</h1>
+
+          <div class="flex flex-col items-center justify-center gap-10">
+            <ion-button color="primary">Crear nueva materia</ion-button>
+
+            <ion-item>
+              <ion-input placeholder="Buscar materia..."></ion-input>
+            </ion-item>
+
+            <CardDataComponent :headers="headers" :data="data">
+              <template #acciones>
+                <div class="flex gap-2">
+                  <ion-button color="primary">Editar</ion-button>
+                  <ion-button color="danger">Eliminar</ion-button>
+                </div>
+              </template>
+            </CardDataComponent>
+          </div>
+        </div>
+      </div>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
 import {
+  IonItem,
+  IonInput,
   IonButtons,
   IonContent,
   IonHeader,
@@ -30,7 +55,38 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  IonButton,
 } from "@ionic/vue";
+import CardDataComponent from "@/components/CardDataComponent.vue";
+
+const headers = [
+  { field: "id", header: "ID" },
+  { field: "nombre", header: "Nombre" },
+  { field: "descripcion", header: "Descripción" },
+  { field: "duracion", header: "Duración (meses)" },
+  { field: "acciones", header: "Acciones" },
+];
+
+const data = [
+  {
+    id: 1,
+    nombre: "Matemáticas",
+    descripcion: "Cálculo, álgebra y geometría básica",
+    duracion: 6,
+  },
+  {
+    id: 2,
+    nombre: "Lenguaje y Literatura",
+    descripcion: "Gramática, redacción y comprensión lectora",
+    duracion: 5,
+  },
+  {
+    id: 3,
+    nombre: "Ciencias Naturales",
+    descripcion: "Biología, física y química básica",
+    duracion: 7,
+  },
+];
 </script>
 
 <style scoped>
