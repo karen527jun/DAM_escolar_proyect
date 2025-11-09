@@ -16,23 +16,31 @@
         </ion-toolbar>
       </ion-header>
 
-      <div
-        class="p-10 flex flex-col items-center justify-center min-h-[80vh]"
-      >
+      <div class="p-10 flex flex-col items-center justify-center min-h-[80vh]">
         <div>
           <h1 class="text-center !font-bold !mb-10">Grados</h1>
+
           <div class="flex flex-col items-center justify-center gap-10">
-            <ion-button color="primary">Crear nuevo grado</ion-button>
+            <ion-button @click="$router.push('/crear-grado')">
+              Crear nuevo grado
+            </ion-button>
 
             <ion-item>
-              <ion-input placeholder="Buscar grado..."></ion-input>
+              <ion-input
+                v-model="busqueda"
+                placeholder="Buscar grado..."
+                @ionInput="filtrarGrados"
+              ></ion-input>
             </ion-item>
-
-            <CardDataComponent :headers="headers" :data="data">
-              <template #acciones>
+            <CardDataComponent :headers="headers" :data="gradosFiltrados">
+              <template #acciones="{ item }">
                 <div class="flex gap-2">
-                  <ion-button color="primary">Editar</ion-button>
-                  <ion-button color="danger">Eliminar</ion-button>
+                  <ion-button color="primary" @click="editarGrado(item)">
+                    Editar
+                  </ion-button>
+                  <ion-button color="danger" @click="eliminarGrado(item.id)">
+                    Eliminar
+                  </ion-button>
                 </div>
               </template>
             </CardDataComponent>
@@ -56,79 +64,60 @@ import {
   IonToolbar,
   IonButton,
 } from "@ionic/vue";
+import { ref, onMounted, computed } from "vue";
 import CardDataComponent from "@/components/CardDataComponent.vue";
+import gradosService from "@/services/grado.services.js";
+
+const grados = ref([]);
+const busqueda = ref("");
 
 const headers = [
-  {
-    field: "id",
-    header: "ID",
-  },
-  {
-    field: "nombre",
-    header: "Nombre del grado",
-  },
-  {
-    field: "seccion",
-    header: "Sección",
-  },
-  {
-    field: "cupos",
-    header: "Cupos",
-  },
-  {
-    field: "acciones",
-    header: "Acciones",
-  },
+  { field: "id", header: "ID" },
+  { field: "nombre", header: "Nombre del grado" },
+  { field: "seccion", header: "Sección" },
+  { field: "cupos", header: "Cupos" },
+  { field: "acciones", header: "Acciones" },
 ];
 
-const data = [
-  {
-    id: 1,
-    nombre: "Primer Grado",
-    seccion: "A",
-    cupos: 25,
-    acciones: "Acciones",
-  },
-  {
-    id: 2,
-    nombre: "Segundo Grado",
-    seccion: "B",
-    cupos: 28,
-    acciones: "Acciones",
-  },
-  {
-    id: 3,
-    nombre: "Tercer Grado",
-    seccion: "C",
-    cupos: 30,
-    acciones: "Acciones",
-  },
-];
+const cargarGrados = async () => {
+  try {
+    const res = await gradosService.getGrados();
+    grados.value = res.data || [];
+  } catch (error) {
+    console.error("Error al cargar grados:", error);
+  }
+};
+
+const gradosFiltrados = computed(() => {
+  if (!busqueda.value) return grados.value;
+  return grados.value.filter((g) =>
+    g.nombre.toLowerCase().includes(busqueda.value.toLowerCase())
+  );
+});
+
+const filtrarGrados = () => {};
+
+const crearGrado = () => {
+  alert("Aquí se abriría el formulario para crear un nuevo grado");
+};
+
+const editarGrado = (grado) => {
+  console.log("Editar grado:", grado);
+};
+
+const eliminarGrado = async (id) => {
+  const confirmar = confirm("¿Seguro que deseas eliminar este grado?");
+  if (!confirmar) return;
+
+  try {
+    await gradosService.deleteGrado(id);
+    grados.value = grados.value.filter((g) => g.id !== id);
+  } catch (error) {
+    console.error("Error al eliminar grado:", error);
+  }
+};
+
+onMounted(() => {
+  cargarGrados();
+});
 </script>
-
-<style scoped>
-#container {
-  text-align: center;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
-}
-
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-  color: #8c8c8c;
-  margin: 0;
-}
-
-#container a {
-  text-decoration: none;
-}
-</style>
