@@ -17,7 +17,7 @@
               :key="i"
             >
               <ion-item
-                @click="selectedIndex = i"
+                @click="navegarRuta(i)"
                 router-direction="root"
                 :router-link="p.url"
                 lines="none"
@@ -99,49 +99,43 @@ const selectedIndex = ref(0);
 const appPages = [
   {
     title: "Usuarios",
-    url: "usuarios",
+    url: "/usuarios",
     iosIcon: mailOutline,
     mdIcon: mailSharp,
   },
   {
-    title: "Materias",
-    url: "materias",
-    iosIcon: paperPlaneOutline,
-    mdIcon: paperPlaneSharp,
-  },
-  {
     title: "Grados",
-    url: "grados",
+    url: "/grados",
     iosIcon: heartOutline,
     mdIcon: heartSharp,
   },
   {
     title: "Secciones",
-    url: "secciones",
+    url: "/secciones",
     iosIcon: archiveOutline,
     mdIcon: archiveSharp,
   },
   {
     title: "Profesores",
-    url: "profesores",
+    url: "/profesores",
     iosIcon: trashOutline,
     mdIcon: trashSharp,
   },
   {
     title: "Asistencia",
-    url: "asistencia",
+    url: "/asistencia",
     iosIcon: warningOutline,
     mdIcon: warningSharp,
   },
   {
     title: "Estudiantes",
-    url: "estudiantes",
+    url: "/estudiantes",
     iosIcon: warningOutline,
     mdIcon: warningSharp,
   },
   {
     title: "Especialidades",
-    url: "especialidades",
+    url: "/especialidades",
     iosIcon: warningOutline,
     mdIcon: warningSharp,
   },
@@ -149,13 +143,11 @@ const appPages = [
 
 const labels = ["Family", "Friends", "Notes", "Work", "Travel", "Reminders"];
 const loggedIn = ref(true);
-const path = window.location.pathname.split("folder/")[1];
-if (path !== undefined) {
-  selectedIndex.value = appPages.findIndex(
-    (page) => page.title.toLowerCase() === path.toLowerCase()
-  );
-}
-const navegarRuta = () => {};
+const navegarRuta = (i) => {
+  selectedIndex.value = i;
+
+  router.push({ path: appPages[i].url });
+};
 </script>
 
 <style scoped>
