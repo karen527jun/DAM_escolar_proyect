@@ -1,7 +1,8 @@
 <template>
   <ion-page>
-    <ion-header :translucent="true">
-      <ion-toolbar class="h-[80px] flex items-center">
+    <LoaderComponent v-if="loader"></LoaderComponent>
+    <ion-header :translucent="true" class="h-fit">
+      <ion-toolbar class="h-[80px] flex items-center px-10">
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
@@ -15,18 +16,16 @@
           <ion-title size="large">{{ $route.params.id }}</ion-title>
         </ion-toolbar>
       </ion-header>
-
-      <div
-        id=""
-        class="p-10 flex flex-col items-center justify-center min-h-[80vh]"
-      >
+      <div>
         <div>
-          <h1 class="text-center !font-bold !mb-10">Usuarios</h1>
+          <h1 class="text-center !text-4xl !font-bold !mb-10 text-gray-500">
+            Especialidades
+          </h1>
           <div class="flex flex-col items-center justify-center gap-10">
             <ion-button
               class="h-[60px]"
-              @click="$router.push('/crear-usuarios')"
-              >Crear nuevo usuario</ion-button
+              @click="$router.push('/crear-especialidad')"
+              >Crear nueva especialidad</ion-button
             >
             <ion-item>
               <ion-input></ion-input>
@@ -60,56 +59,36 @@ import {
   IonButton,
 } from "@ionic/vue";
 import CardDataComponent from "@/components/CardDataComponent.vue";
-
+import especialidadesServices from "@/services/especialidad.services.js";
+import { onMounted, ref } from "vue";
+import LoaderComponent from "@/components/LoaderComponent.vue";
 const headers = [
   {
-    field: "id",
+    field: "id_especialidad",
     header: "ID",
   },
   {
-    field: "nombres",
-    header: "Nombres",
-  },
-  {
-    field: "apellidos",
-    header: "Apellidos",
-  },
-  {
-    field: "correo",
-    header: "Correo",
-  },
-  {
-    field: "rol",
-    header: "Rol",
-  },
-  {
-    field: "acciones",
-    header: "Acciones",
+    field: "nombre_especialidad",
+    header: "Especialidad",
   },
 ];
-const data = [
-  {
-    id: 1,
-    nombres: "Karen Adriana ",
-    apellidos: "Martínez Rivera",
-    correo: "ucorreosuuuuuuperlargsssssssssssssssssssso@gmail.com",
-    rol: "Rol",
-  },
-  {
-    id: 1,
-    nombres: "Nombres",
-    apellidos: "Apellidos",
-    correo: "Correo",
-    rol: "Rol",
-  },
-  {
-    id: 1,
-    nombres: "Nombres",
-    apellidos: "Apellidos",
-    correo: "Correo",
-    rol: "Rol",
-  },
-];
+const data = ref([]);
+const loader = ref(false);
+const getEspecialidad = async () => {
+  try {
+    loader.value = true;
+    const res = await especialidadesServices.getEspecialidades();
+    data.value = res.data;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    loader.value = false;
+  }
+};
+
+onMounted(() => {
+  getEspecialidad();
+});
 </script>
 
 <style scoped>
