@@ -1,12 +1,6 @@
 <template>
   <ion-page>
     <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Login</ion-title>
-        </ion-toolbar>
-      </ion-header>
-
       <div id="container">
         <div
           class="h-[100vh] flex max-sm:items-end justify-center w-[100vw] bg-blue-500"
@@ -46,7 +40,10 @@
               <small class="text-end underline text-blue-500"
                 ><a href="">Olvide mi contraseña</a></small
               >
-              <ion-button color="primary" shape="round"
+              <ion-button
+                @click="$router.push('/dashboard')"
+                color="primary"
+                shape="round"
                 >Iniciar sesión</ion-button
               >
             </div>

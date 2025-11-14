@@ -16,18 +16,19 @@
             Asistencia
           </h1>
           <div class="flex flex-col items-center justify-center gap-10">
-            <ion-button
+            <!-- <ion-button
               class="h-[60px]"
               @click="$router.push('/crear-asistencia')"
-              >Crear nueva asistencia</ion-button
-            >
-            <ion-item>
-              <ion-input></ion-input>
-            </ion-item>
+              >Crear nueva asistencia</ion-button -->
+            <!-- > -->
             <CardDataComponent :headers="headers" :data="data">
-              <template #acciones>
+              <template v-slot:acciones="{ item }">
                 <div class="flex gap-2">
-                  <ion-button color="primary">Editar</ion-button>
+                  <ion-button
+                    color="primary"
+                    @click="$router.push(`/crear-asistencia/${item.id}`)"
+                    >Agregar Asistencia</ion-button
+                  >
                   <ion-button color="danger">Eliminar</ion-button>
                 </div>
               </template>
@@ -50,6 +51,58 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/vue";
+import { ref } from "vue";
+
+const headers = [
+  {
+    field: "id",
+    header: "ID",
+  },
+  {
+    field: "fecha",
+    header: "Fecha",
+  },
+  {
+    field: "hora",
+    header: "Hora",
+  },
+  {
+    field: "estado",
+    header: "Estado",
+  },
+  {
+    field: "grado",
+    header: "Grado",
+  },
+  {
+    field: "acciones",
+    header: "Acciones",
+  },
+];
+
+const data = ref([
+  {
+    id: 1,
+    fecha: "2023-02-03",
+    hora: "12:00",
+    estado: "Presente",
+    grado: "Primero",
+  },
+  {
+    id: 2,
+    fecha: "2023-02-03",
+    hora: "12:00",
+    estado: "Presente",
+    grado: "Segundo",
+  },
+  {
+    id: 3,
+    fecha: "2023-02-03",
+    hora: "12:00",
+    estado: "Presente",
+    grado: "Tercero",
+  },
+]);
 </script>
 
 <style scoped>

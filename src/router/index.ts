@@ -66,7 +66,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("../views/asistencia/index.vue"),
   },
   {
-    path: "/crear-asistencia",
+    path: "/crear-asistencia/:id",
     component: () => import("../views/asistencia/crearAsistencia.vue"),
   },
   {

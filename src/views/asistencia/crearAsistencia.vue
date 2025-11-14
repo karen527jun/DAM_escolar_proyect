@@ -10,26 +10,12 @@
     </ion-header>
 
     <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">{{ $route.params.id }}</ion-title>
-        </ion-toolbar>
-      </ion-header>
-
       <div>
         <h1 class="text-center !font-bold !my-10 text-gray-500">
           Crear nueva asistencia
         </h1>
         <div class="grid grid-cols-1 gap-6 px-4">
           <div>
-            <ion-item>
-              <ion-input
-                v-model="v$.nombre_especialidad.$model"
-                placeholder="NIE"
-                type="text"
-                label="NIE"
-              ></ion-input>
-            </ion-item>
             <span
               v-if="v$.nombre_especialidad.$error"
               v-for="value in v$.nombre_especialidad.$errors"
@@ -118,6 +104,29 @@ import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength, helpers } from "@vuelidate/validators";
 import especialidadServices from "@/services/especialidad.services.js";
 const router = useIonRouter();
+const alumnos = [
+  {
+    Nombre: "Pedro",
+    Apellido: "Perez",
+    NIE: "12345678A",
+  },
+  {
+    Nombre: "Pedro",
+    Apellido: "Perez",
+    NIE: "12345678A",
+  },
+  {
+    Nombre: "Pedro",
+    Apellido: "Perez",
+    NIE: "12345678A",
+  },
+  {
+    Nombre: "Pedro",
+    Apellido: "Perez",
+    NIE: "12345678A",
+  },
+];
+
 const especialidad = ref({
   nombre_especialidad: "",
 });

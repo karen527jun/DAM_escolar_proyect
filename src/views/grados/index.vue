@@ -10,12 +10,6 @@
     </ion-header>
 
     <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Grados</ion-title>
-        </ion-toolbar>
-      </ion-header>
-
       <div class="p-10 flex flex-col items-center justify-center min-h-[80vh]">
         <div>
           <h1 class="text-center !font-bold !mb-10">Grados</h1>
@@ -72,10 +66,11 @@ const grados = ref([]);
 const busqueda = ref("");
 
 const headers = [
-  { field: "id", header: "ID" },
-  { field: "nombre", header: "Nombre del grado" },
+  { field: "nombre_grado", header: "Nombre del grado" },
+  { field: "especialidad", header: "Especialidad" },
   { field: "seccion", header: "Sección" },
-  { field: "cupos", header: "Cupos" },
+  { field: "profesor", header: "Profesor" },
+  { field: "year", header: "Año lectivo" },
   { field: "acciones", header: "Acciones" },
 ];
 
