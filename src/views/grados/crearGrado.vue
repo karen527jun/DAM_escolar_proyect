@@ -104,8 +104,7 @@ import {
   useIonRouter,
 } from "@ionic/vue";
 import { ref } from "vue";
-import gradoServices from "@/services/grado.services"; // Debes crear este servicio
-import { useVuelidate } from "@vuelidate/core";
+import gradoServices from "@/services/grado.services"; 
 import { required, minValue, helpers } from "@vuelidate/validators";
 
 const router = useIonRouter();
