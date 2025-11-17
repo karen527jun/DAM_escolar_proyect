@@ -61,6 +61,10 @@ const headers = [
     header: "Sección",
   },
   {
+    field: "nombre_grado",
+    header: "Grado",
+  },
+  {
     field: "acciones",
     header: "Acciones",
   },

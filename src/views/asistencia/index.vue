@@ -29,7 +29,6 @@
                     @click="$router.push(`/crear-asistencia/${item.id_grado}`)"
                     >Agregar Asistencia</ion-button
                   >
-                  <ion-button color="danger">Eliminar</ion-button>
                 </div>
               </template>
             </CardDataComponent>
@@ -67,6 +66,10 @@ const headers = [
   {
     field: "especialidad",
     header: "Especialidad",
+  },
+  {
+    field: "year",
+    header: "Año",
   },
   {
     field: "acciones",

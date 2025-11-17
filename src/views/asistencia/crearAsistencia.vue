@@ -52,7 +52,7 @@
               fill="outline"
               color="dark"
               class="h-[60px] font-bold"
-              @click="$router.push('/especialidades')"
+              @click="$router.push('/asistencia')"
               >Cancelar</ion-button
             >
           </div>

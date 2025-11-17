@@ -23,19 +23,35 @@
         <div>
           <h1 class="text-center !font-bold !mb-10">Usuarios</h1>
           <div class="flex flex-col items-center justify-center gap-10">
-            <ion-button
-              class="h-[60px]"
-              @click="$router.push('/crear-usuarios')"
-              >Crear nuevo usuario</ion-button
-            >
             <ion-item>
               <ion-input></ion-input>
             </ion-item>
             <CardDataComponent :headers="headers" :data="data">
               <template #acciones>
                 <div class="flex gap-2">
-                  <ion-button color="primary">Editar</ion-button>
-                  <ion-button color="danger">Eliminar</ion-button>
+                  <ion-button color="danger" fill="outline">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      height="24px"
+                      viewBox="0 -960 960 960"
+                      width="24px"
+                      fill="#e5000b"
+                    >
+                      <path
+                        d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"
+                      />
+                    </svg>
+                  </ion-button>
+                </div>
+              </template>
+              <template #estado="{ item }">
+                <div>
+                  <div
+                    class="py-2 px-6 rounded-full border"
+                    :class="'bg-green-100 border-green-600 text-green-600 font-bold'"
+                  >
+                    Activo
+                  </div>
                 </div>
               </template>
             </CardDataComponent>
@@ -60,34 +76,25 @@ import {
   IonButton,
 } from "@ionic/vue";
 import CardDataComponent from "@/components/CardDataComponent.vue";
-
+import usuarioServices from "@/services/usuarios.services.js";
+import { ref } from "vue";
 const headers = [
   {
-    field: "id",
-    header: "ID",
-  },
-  {
-    field: "nombres",
+    field: "username",
     header: "Nombres",
   },
   {
-    field: "apellidos",
-    header: "Apellidos",
-  },
-  {
-    field: "correo",
-    header: "Correo",
-  },
-  {
-    field: "rol",
-    header: "Rol",
+    field: "estado",
+    header: "Estado",
+    template: true,
+    template_name: "estado",
   },
   {
     field: "acciones",
     header: "Acciones",
   },
 ];
-const data = [
+const data = ref([
   {
     id: 1,
     nombres: "Karen Adriana ",
@@ -109,7 +116,15 @@ const data = [
     correo: "Correo",
     rol: "Rol",
   },
-];
+]);
+const getUsuarios = async () => {
+  try {
+    const res = await usuarioServices.getUsuarios();
+    data.value = res.data;
+  } catch (error) {}
+};
+
+getUsuarios();
 </script>
 
 <style scoped>
