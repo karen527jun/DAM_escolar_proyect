@@ -18,25 +18,32 @@
           <div>
             <ion-item>
               <ion-input
-                v-model="v$.nombre_especialidad.$model"
+                v-model="v$.nombre_seccion.$model"
                 placeholder="Sección"
                 type="text"
                 label="Sección"
               ></ion-input>
             </ion-item>
+
             <ion-item>
               <ion-select
-                v-model="v$.nombre_especialidad.$model"
+                v-model="v$.grado_id.$model"
                 placeholder="Grado"
                 type="text"
                 label="Grado"
               >
-                <ion-select-option value="Primero">Primero</ion-select-option>
+                <ion-select-option
+                  v-for="value in grados"
+                  :key="value.id_grado"
+                  :value="value.id_grado"
+                  >{{ value.nombre_grado }}</ion-select-option
+                >
               </ion-select>
             </ion-item>
             <span
-              v-if="v$.nombre_especialidad.$error"
-              v-for="value in v$.nombre_especialidad.$errors"
+              v-if="v$.grado_id.$error"
+              v-for="value in v$.grado_id.$errors"
+              :key="value.grado"
               class="text-[12px] text-red-500 ml-5"
             >
               {{ value.$message }}
@@ -46,14 +53,14 @@
             <ion-button
               color="primary"
               class="h-[60px] font-bold"
-              @click="crearEspecialidad()"
+              @click="crearSeccion()"
               >Crear</ion-button
             >
             <ion-button
               fill="outline"
               color="dark"
               class="h-[60px] font-bold"
-              @click="$router.push('/especialidades')"
+              @click="$router.push('/Secciones')"
               >Cancelar</ion-button
             >
           </div>
@@ -79,35 +86,55 @@ import {
   IonRadioGroup,
   IonLabel,
   useIonRouter,
+  IonSelect,
+  IonSelectOption,
 } from "@ionic/vue";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength, helpers } from "@vuelidate/validators";
-import especialidadServices from "@/services/especialidad.services.js";
+import SeccionServices from "@/services/seccion.services.js";
+import gradoServices from "@/services/grado.services.js";
 const router = useIonRouter();
-const especialidad = ref({
-  nombre_especialidad: "",
+const seccion = ref({
+  nombre_seccion: "",
+  grado_id: "",
 });
 const rules = {
-  nombre_especialidad: {
+  nombre_seccion: {
     required: helpers.withMessage("El nombre es requerido", required),
   },
+  grado_id: {
+    required: helpers.withMessage("El grado es requerido", required),
+  },
 };
-const v$ = useVuelidate(rules, especialidad);
+const v$ = useVuelidate(rules, seccion);
 
-const crearEspecialidad = async () => {
+const crearSeccion = async () => {
   try {
     if (v$.value.$invalid) {
       return;
     }
-    const res = await especialidadServices.postEspecialidades(
-      especialidad.value
-    );
+    const res = await SeccionServices.postSecciones(seccion.value);
+    console.log(res);
+
     router.back();
   } catch (error) {
     console.log(error);
   }
 };
+const grados = ref([]);
+const getGrados = async () => {
+  try {
+    const res = await gradoServices.getGrados();
+    grados.value = res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+onMounted(() => {
+  getGrados();
+});
 </script>
 
 <style scoped>

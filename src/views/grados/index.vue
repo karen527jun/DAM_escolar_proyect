@@ -58,11 +58,12 @@ import {
   IonToolbar,
   IonButton,
 } from "@ionic/vue";
-import { ref, onMounted, computed } from "vue";
+import Grados from "@/interfaces/Grados";
+import { ref, onMounted, computed, Ref } from "vue";
 import CardDataComponent from "@/components/CardDataComponent.vue";
 import gradosService from "@/services/grado.services.js";
 
-const grados = ref([]);
+const grados: Ref<Grados[]> = ref([]);
 const busqueda = ref("");
 
 const headers = [
@@ -86,7 +87,7 @@ const cargarGrados = async () => {
 const gradosFiltrados = computed(() => {
   if (!busqueda.value) return grados.value;
   return grados.value.filter((g) =>
-    g.nombre.toLowerCase().includes(busqueda.value.toLowerCase())
+    g.nombre_grado.toLowerCase().includes(busqueda.value.toLowerCase())
   );
 });
 

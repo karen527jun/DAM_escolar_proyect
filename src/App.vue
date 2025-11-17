@@ -2,7 +2,7 @@
   <ion-app>
     <ion-split-pane content-id="main-content">
       <ion-menu
-        v-if="loggedIn"
+        v-if="$route.name !== 'LoginView'"
         class="md:max-w-[300px]"
         content-id="main-content"
         type="overlay"
@@ -34,10 +34,28 @@
                 <ion-label class="ml-4">{{ p.title }}</ion-label>
               </ion-item>
             </ion-menu-toggle>
+            <div @click="loggout()" class="border-t border-gray-400 py-4">
+              <div
+                class="pl-3 py-3 text-xl shadow-lg flex items-center gap-5 bg-blue-300 cursor-pointer focus-visible:bg-blue-400 border-3 border-blue-600 text-blue-600 font-bold px-6 rounded"
+              >
+                Cerrar sesión
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="blue"
+                >
+                  <path
+                    d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"
+                  />
+                </svg>
+              </div>
+            </div>
           </div>
         </ion-content>
       </ion-menu>
-      <ion-router-outlet id="main-content"></ion-router-outlet>
+      <ion-router-outlet id="main-content"> </ion-router-outlet>
     </ion-split-pane>
   </ion-app>
 </template>
@@ -58,7 +76,7 @@ import {
   IonSplitPane,
   useIonRouter,
 } from "@ionic/vue";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import {
   archiveOutline,
   archiveSharp,
@@ -123,13 +141,26 @@ const appPages = [
   },
 ];
 
-const labels = ["Family", "Friends", "Notes", "Work", "Travel", "Reminders"];
 const loggedIn = ref(true);
+
 const navegarRuta = (i) => {
   selectedIndex.value = i;
 
   router.push({ path: appPages[i].url });
 };
+const loggout = () => {
+  localStorage.removeItem("token");
+  router.replace("/login");
+  loggedIn.value = false;
+};
+
+onMounted(() => {
+  setTimeout(() => {
+    if (localStorage.getItem("token")) {
+      loggedIn.value = true;
+    }
+  }, 1000);
+});
 </script>
 
 <style scoped>

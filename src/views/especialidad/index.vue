@@ -60,7 +60,8 @@ import {
 } from "@ionic/vue";
 import CardDataComponent from "@/components/CardDataComponent.vue";
 import especialidadesServices from "@/services/especialidad.services.js";
-import { onMounted, ref } from "vue";
+import { onMounted, Ref, ref } from "vue";
+import Especialidad from "@/interfaces/especialidades";
 import LoaderComponent from "@/components/LoaderComponent.vue";
 const headers = [
   {
@@ -72,7 +73,7 @@ const headers = [
     header: "Especialidad",
   },
 ];
-const data = ref([]);
+const data: Ref<Especialidad[]> = ref([]);
 const loader = ref(false);
 const getEspecialidad = async () => {
   try {

@@ -13,26 +13,37 @@
       <div>
         <div>
           <h1 class="text-center !text-4xl !font-bold !mb-10 text-gray-500">
-            Grados disponibles
+            Secciones disponibles
           </h1>
           <div
             class="bg-yellow-100 border-2 border-yellow-500 m-5 p-2 text-yellow-800 rounded-xl"
           >
-            <strong> Asignación de Grado Obligatoria:</strong> No se puede
+            <strong> Asignación de Sección Obligatoria:</strong> No se puede
             guardar ni completar el perfil de este alumno sin asignarle
-            un<strong> Grado</strong> .
+            una<strong> sección</strong> .
           </div>
-          <ion-radio-group>
-            <div
-              v-for="grado in 5"
-              class="border border-gray-200 rounded-3xl p-10 shadow-lg m-5"
+          <div class="border m-5 rounded-xl shadow-md border-gray-400 p-5">
+            <ionRadioGroup
+              v-if="data.length > 0"
+              @ion-change="handleChange($event)"
             >
-              <ion-item>
-                <ion-radio>Grado {{ grado }}</ion-radio>
-              </ion-item>
-            </div>
-          </ion-radio-group>
-          <div class="w-full flex items-center justify-center pb-5">
+              <IonItem
+                v-for="item in data"
+                :key="item.id_seccion"
+                class="flex justify-between px-10 py-2 w-full border-b border-gray-400"
+              >
+                <IonLabel>{{ item.nombre_seccion }}</IonLabel>
+                <IonRadio
+                  class="border rounded-full border-gray-300"
+                  :value="item.id_seccion"
+                />
+              </IonItem>
+            </ionRadioGroup>
+          </div>
+          <div
+            @click="crearMatricula()"
+            class="w-full flex items-center justify-center pb-5"
+          >
             <ion-button>Guardar información</ion-button>
           </div>
         </div>
@@ -50,68 +61,42 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  IonButton,
+  IonRadio,
+  IonRadioGroup,
 } from "@ionic/vue";
-import CardDataComponent from "@/components/CardDataComponent.vue";
-import estudiantesService from "@/services/estudiantes.services.js";
+import seccionesServices from "@/services/seccion.services.js";
 import { onMounted, ref } from "vue";
 // import estudiantes from "@/interfaces/.ts";
 import router from "@/router";
-
-const headers = [
-  {
-    field: "NIE",
-    header: "NIE",
-  },
-  {
-    field: "nombre_completo",
-    header: "Nombre",
-  },
-  {
-    field: "correo",
-    header: "Correo",
-  },
-  {
-    field: "nombre_responsable",
-    header: "Nombre de persona responsable",
-  },
-  {
-    field: "telefono_de_emergencia",
-    header: "Telefono",
-  },
-  {
-    field: "direccion",
-    header: "Dirección",
-  },
-  {
-    field: "lugar_de_nacimiento",
-    header: "Lugar de nacimiento",
-  },
-  {
-    field: "genero_del_alumno",
-    header: "Género",
-  },
-  {
-    field: "estado_profe",
-    header: "Estado",
-    template: true,
-    template_name: "estado",
-  },
-  {
-    field: "acciones",
-    header: "Acciones",
-  },
-];
+import estudiantesServices from "@/services/estudiantes.services";
+const matricula = ref({
+  seccion: "",
+  nie: router.currentRoute.value.params.nie,
+});
 const data = ref([]);
 
 const getData = async () => {
   try {
-    const res = await estudiantesService.getEstudiantes();
+    const res = await seccionesServices.getSecciones();
     data.value = res.data;
   } catch (error) {
     console.log(error);
   }
 };
+const handleChange = (event) => {
+  matricula.value.seccion = event.detail.value;
+};
+const crearMatricula = async () => {
+  try {
+    const res = await estudiantesServices.postMatricula(matricula.value);
+    console.log(res);
 
+    router.push("/estudiantes");
+  } catch (error) {
+    console.log(error);
+  }
+};
 onMounted(() => {
   getData();
 });

@@ -21,12 +21,12 @@
               @click="$router.push('/crear-asistencia')"
               >Crear nueva asistencia</ion-button -->
             <!-- > -->
-            <CardDataComponent :headers="headers" :data="data">
+            <CardDataComponent :headers="headers" :data="grados">
               <template v-slot:acciones="{ item }">
                 <div class="flex gap-2">
                   <ion-button
                     color="primary"
-                    @click="$router.push(`/crear-asistencia/${item.id}`)"
+                    @click="$router.push(`/crear-asistencia/${item.id_grado}`)"
                     >Agregar Asistencia</ion-button
                   >
                   <ion-button color="danger">Eliminar</ion-button>
@@ -42,8 +42,10 @@
 
 <script setup lang="ts">
 import CardDataComponent from "@/components/CardDataComponent.vue";
+import gradoServices from "@/services/grado.services";
+import Grado from "@/interfaces/Grados";
 import {
-  IonButtons,
+  IonButton,
   IonContent,
   IonHeader,
   IonMenuButton,
@@ -51,28 +53,20 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/vue";
-import { ref } from "vue";
+import { onMounted, Ref, ref } from "vue";
 
 const headers = [
   {
-    field: "id",
-    header: "ID",
+    field: "seccion",
+    header: "Seccion",
   },
   {
-    field: "fecha",
-    header: "Fecha",
-  },
-  {
-    field: "hora",
-    header: "Hora",
-  },
-  {
-    field: "estado",
-    header: "Estado",
-  },
-  {
-    field: "grado",
+    field: "nombre_grado",
     header: "Grado",
+  },
+  {
+    field: "especialidad",
+    header: "Especialidad",
   },
   {
     field: "acciones",
@@ -83,26 +77,36 @@ const headers = [
 const data = ref([
   {
     id: 1,
-    fecha: "2023-02-03",
-    hora: "12:00",
+    seccion: "A",
     estado: "Presente",
     grado: "Primero",
   },
   {
     id: 2,
-    fecha: "2023-02-03",
-    hora: "12:00",
+    seccion: "A",
     estado: "Presente",
     grado: "Segundo",
   },
   {
     id: 3,
-    fecha: "2023-02-03",
-    hora: "12:00",
+    seccion: "A",
     estado: "Presente",
     grado: "Tercero",
   },
 ]);
+const grados: Ref<Grado[]> = ref([]);
+const getSecciones = async () => {
+  try {
+    const res = await gradoServices.getGrados();
+    grados.value = res.data.filter((grado) => grado.seccion !== null);
+    console.log(grados.value);
+  } catch (error) {
+    console.log(error);
+  }
+};
+onMounted(() => {
+  getSecciones();
+});
 </script>
 
 <style scoped>

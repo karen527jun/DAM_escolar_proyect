@@ -51,20 +51,35 @@ import {
   IonButton,
 } from "@ionic/vue";
 import CardDataComponent from "@/components/CardDataComponent.vue";
-
-import { ref } from "vue";
+import Seccion from "@/interfaces/secciones";
+import { onMounted, Ref, ref } from "vue";
+import seccionServices from "@/services/seccion.services";
 
 const headers = [
   {
-    field: "id_especialidad",
-    header: "ID",
+    field: "nombre_seccion",
+    header: "Sección",
   },
   {
-    field: "nombre_especialidad",
-    header: "Especialidad",
+    field: "acciones",
+    header: "Acciones",
   },
 ];
-const data = ref([]);
+const data: Ref<Seccion[]> = ref([]);
+
+const getSecciones = async () => {
+  try {
+    const res = await seccionServices.getSecciones();
+    console.log(res.data);
+    data.value = res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+onMounted(() => {
+  getSecciones();
+});
 </script>
 
 <style scoped>

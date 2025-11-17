@@ -30,15 +30,15 @@ const routes: Array<RouteRecordRaw> = [
     path: "/grados",
     component: () => import("../views/grados/index.vue"),
   },
-{
-  path: "/crear-grado",
-  component: () => import("../views/grados/crearGrado.vue"),
-},
-{
-  path: "/editar-grado/:id",
-  name: "editarGrado",
-  component: () => import("../views/grados/editarGrado.vue"),
-},
+  {
+    path: "/crear-grado",
+    component: () => import("../views/grados/crearGrado.vue"),
+  },
+  {
+    path: "/editar-grado/:id",
+    name: "editarGrado",
+    component: () => import("../views/grados/editarGrado.vue"),
+  },
 
   {
     path: "/secciones",
@@ -99,6 +99,27 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem("token");
+
+  const publicRoutes = ["/login"];
+
+  if (publicRoutes.includes(to.path)) {
+    if (token && to.path === "/login") {
+      next("/dashboard");
+    } else {
+      next();
+    }
+    return;
+  }
+
+  if (!token) {
+    return next("/login");
+  }
+
+  next();
 });
 
 export default router;

@@ -26,25 +26,6 @@
           </div>
           <div>
             <ion-item>
-              <ion-select
-                v-model="v$.nombre_especialidad.$model"
-                placeholder="Grado"
-                type="text"
-                label="Grado"
-              >
-                <ion-select-option value="Primero">Primero</ion-select-option>
-              </ion-select>
-            </ion-item>
-            <span
-              v-if="v$.nombre_especialidad.$error"
-              v-for="value in v$.nombre_especialidad.$errors"
-              class="text-[12px] text-red-500 ml-5"
-            >
-              {{ value.$message }}
-            </span>
-          </div>
-          <div>
-            <ion-item>
               <ion-input
                 v-model="v$.nombre_especialidad.$model"
                 placeholder="00/00/0000"

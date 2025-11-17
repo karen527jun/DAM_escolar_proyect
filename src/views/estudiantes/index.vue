@@ -10,34 +10,6 @@
     </ion-header>
 
     <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Estudiantes</ion-title>
-        </ion-toolbar>
-      </ion-header>
-
-<<<<<<< HEAD
-      <div class="p-10 flex flex-col items-center justify-center min-h-[80vh]">
-        <div>
-          <h1 class="text-center !font-bold !mb-10 text-2xl">Estudiantes</h1>
-
-          <div class="flex flex-col items-center justify-center gap-6 w-full">
-            <ion-button color="primary">Agregar nuevo estudiante</ion-button>
-            <ion-item class="w-full max-w-lg">
-              <ion-input placeholder="Buscar estudiante..."></ion-input>
-            </ion-item>
-            <CardDataComponent :headers="headers" :data="data">
-              <template #acciones="{ row }">
-                <div class="flex gap-2">
-                  <ion-button color="primary" @click="editar(row)">
-                    Editar
-                  </ion-button>
-                  <ion-button color="danger" @click="eliminar(row)">
-                    Eliminar
-                  </ion-button>
-                </div>
-              </template>
-=======
       <div>
         <div>
           <h1 class="text-center !text-4xl !font-bold !mb-10 text-gray-500">
@@ -99,7 +71,6 @@
                   {{ item.estado ? "Activo" : "Inactivo" }}
                 </div>
               </template>
->>>>>>> origin/karen-dev
             </CardDataComponent>
           </div>
         </div>
@@ -121,52 +92,10 @@ import {
   IonToolbar,
   IonButton,
 } from "@ionic/vue";
+import Estudiante from "@/interfaces/estudiantes";
 import CardDataComponent from "@/components/CardDataComponent.vue";
-<<<<<<< HEAD
-
-const headers = [
-  { field: "id", header: "ID" },
-  { field: "nombres", header: "Nombres" },
-  { field: "apellidos", header: "Apellidos" },
-  { field: "grado", header: "Grado" },
-  { field: "seccion", header: "Sección" },
-  { field: "acciones", header: "Acciones" },
-];
-
-const data = [
-  {
-    id: 1,
-    nombres: "María Fernanda",
-    apellidos: "López Gómez",
-    grado: "9°",
-    seccion: "A",
-  },
-  {
-    id: 2,
-    nombres: "Carlos Alberto",
-    apellidos: "Hernández Ruiz",
-    grado: "8°",
-    seccion: "B",
-  },
-  {
-    id: 3,
-    nombres: "Lucía Alejandra",
-    apellidos: "Martínez Rivera",
-    grado: "7°",
-    seccion: "C",
-  },
-];
-
-const editar = (row: any) => {
-  console.log("Editar estudiante:", row);
-};
-
-const eliminar = (row: any) => {
-  console.log("Eliminar estudiante:", row);
-};
-=======
 import estudiantesService from "@/services/estudiantes.services.js";
-import { onMounted, ref } from "vue";
+import { onMounted, Ref, ref } from "vue";
 // import estudiantes from "@/interfaces/.ts";
 import router from "@/router";
 
@@ -214,7 +143,7 @@ const headers = [
     header: "Acciones",
   },
 ];
-const data = ref([]);
+const data: Ref<Estudiante[]> = ref([]);
 
 const getData = async () => {
   try {
@@ -228,7 +157,6 @@ const getData = async () => {
 onMounted(() => {
   getData();
 });
->>>>>>> origin/karen-dev
 </script>
 
 <style scoped>

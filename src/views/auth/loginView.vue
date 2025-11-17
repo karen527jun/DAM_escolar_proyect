@@ -21,29 +21,46 @@
               <span class="text-start pl-4 text-blue-500 text-3xl font-bold"
                 >Login</span
               >
-              <ion-item>
-                <ion-input
-                  placeholder="Correo"
-                  type="email"
-                  label="Correo electrónico"
-                  labelPlacement="floating"
-                ></ion-input>
-              </ion-item>
-              <ion-item>
-                <ion-input
-                  placeholder="Contraseña"
-                  type="password"
-                  label="Contraseña"
-                  labelPlacement="floating"
-                ></ion-input>
-              </ion-item>
+              <div>
+                <ion-item>
+                  <ion-input
+                    placeholder="Usuario"
+                    type="text"
+                    label="Usuario"
+                    labelPlacement="floating"
+                    v-model="v$.username.$model"
+                  ></ion-input>
+                </ion-item>
+                <span
+                  v-if="v$.username.$error"
+                  v-for="value in v$.username.$errors"
+                  class="text-[12px] text-red-500 ml-5"
+                >
+                  {{ value.$message }}
+                </span>
+              </div>
+              <div>
+                <ion-item>
+                  <ion-input
+                    placeholder="Contraseña"
+                    type="password"
+                    label="Contraseña"
+                    labelPlacement="floating"
+                    v-model="v$.password.$model"
+                  ></ion-input>
+                </ion-item>
+                <span
+                  v-if="v$.password.$error"
+                  v-for="value in v$.password.$errors"
+                  class="text-[12px] text-red-500 ml-5"
+                >
+                  {{ value.$message }}
+                </span>
+              </div>
               <small class="text-end underline text-blue-500"
                 ><a href="">Olvide mi contraseña</a></small
               >
-              <ion-button
-                @click="$router.push('/dashboard')"
-                color="primary"
-                shape="round"
+              <ion-button @click="login()" color="primary" shape="round"
                 >Iniciar sesión</ion-button
               >
             </div>
@@ -68,6 +85,39 @@ import {
   IonInput,
   IonButton,
 } from "@ionic/vue";
+import authServices from "@/services/auth.services";
+import { ref } from "vue";
+import { helpers, required } from "@vuelidate/validators";
+import useVuelidate from "@vuelidate/core";
+import { useIonRouter } from "@ionic/vue";
+
+const user = ref({
+  username: "",
+  password: "",
+});
+
+const rules = {
+  username: {
+    required: helpers.withMessage("El campo es requerido", required),
+  },
+  password: {
+    required: helpers.withMessage("El campo es requerido", required),
+  },
+};
+const router = useIonRouter();
+const v$ = useVuelidate(rules, user);
+const login = async () => {
+  try {
+    const res = await authServices.login(user.value);
+    if (res.data.estado) {
+      localStorage.setItem("token", res?.data?.token);
+      // localStorage.setItem("rol", res?.data?.rol);
+      router.push("/dashboard");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 </script>
 
 <style scoped>
