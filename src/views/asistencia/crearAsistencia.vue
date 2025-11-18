@@ -16,15 +16,6 @@
         </h1>
         <div class="grid grid-cols-1 gap-6 px-4">
           <div>
-            <span
-              v-if="v$.nombre_especialidad.$error"
-              v-for="value in v$.nombre_especialidad.$errors"
-              class="text-[12px] text-red-500 ml-5"
-            >
-              {{ value.$message }}
-            </span>
-          </div>
-          <div>
             <ion-item>
               <ion-input
                 v-model="v$.nombre_especialidad.$model"
@@ -40,6 +31,18 @@
             >
               {{ value.$message }}
             </span>
+          </div>
+          <div>
+            <ion-radio-group class="" v-if="alumnos?.length > 0">
+              <IonItem
+                v-for="value in alumnos"
+                class="flex justify-between py-2 w-full"
+              >
+                <ion-label>{{ value.nombre_completo }}</ion-label>
+
+                <ion-radio class="border rounded-full border-gray-300" />
+              </IonItem>
+            </ion-radio-group>
           </div>
           <div class="my-10 flex flex-col gap-5 justify-center mx-5">
             <ion-button
@@ -84,29 +87,11 @@ import profesorServices from "@/services/profesor.services";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength, helpers } from "@vuelidate/validators";
 import especialidadServices from "@/services/especialidad.services.js";
-const router = useIonRouter();
-const alumnos = [
-  {
-    Nombre: "Pedro",
-    Apellido: "Perez",
-    NIE: "12345678A",
-  },
-  {
-    Nombre: "Pedro",
-    Apellido: "Perez",
-    NIE: "12345678A",
-  },
-  {
-    Nombre: "Pedro",
-    Apellido: "Perez",
-    NIE: "12345678A",
-  },
-  {
-    Nombre: "Pedro",
-    Apellido: "Perez",
-    NIE: "12345678A",
-  },
-];
+import gradosServices from "@/services/grado.services.js";
+import router from "@/router";
+const ionRouter = useIonRouter();
+const data = ref([]);
+const alumnos = ref([]);
 
 const especialidad = ref({
   nombre_especialidad: "",
@@ -118,6 +103,15 @@ const rules = {
 };
 const v$ = useVuelidate(rules, especialidad);
 
+const getEstudiantesGrado = async () => {
+  try {
+    const res = await gradosServices.getEstudiantesPorGrado();
+    data.value = res?.data?.filter((alumno) => alumno.id_grado == 2)[0];
+    alumnos.value = data?.value.estudiantes;
+  } catch (error) {
+    console.log(error);
+  }
+};
 const crearEspecialidad = async () => {
   try {
     if (v$.value.$invalid) {
@@ -131,6 +125,8 @@ const crearEspecialidad = async () => {
     console.log(error);
   }
 };
+
+getEstudiantesGrado();
 </script>
 
 <style scoped>

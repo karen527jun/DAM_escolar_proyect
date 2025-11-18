@@ -32,7 +32,9 @@
                 :key="item.id_seccion"
                 class="flex justify-between px-10 py-2 w-full border-b border-gray-400"
               >
-                <IonLabel>{{ item.nombre_seccion }}</IonLabel>
+                <IonLabel
+                  >{{ item.nombre_grado }} {{ item.nombre_seccion }}</IonLabel
+                >
                 <IonRadio
                   class="border rounded-full border-gray-300"
                   :value="item.id_seccion"

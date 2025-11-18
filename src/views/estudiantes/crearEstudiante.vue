@@ -332,9 +332,9 @@ const crearEstudiante = async () => {
         genero_del_alumno: "",
         nombre_responsable: "",
         dui: "",
-        estado: 0,
+        estado: 1,
       };
-      router.push("/crear-matricula/" + res.data.NIE);
+      router.push("/crear-matricula/" + res.data.data.nie);
     } else {
       let toast = await toastController.create({
         message: "Error al crear el profesor",

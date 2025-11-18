@@ -10,6 +10,11 @@ const getGrados = async () => {
   return response;
 };
 
+const getEstudiantesPorGrado = async () => {
+  const response = await network.get(`/grados/estudiantes`);
+  return response;
+}
+
 const getGradoById = async (id) => {
   const response = await network.get(`/grados/${id}`);
   return response;
@@ -31,4 +36,5 @@ export default {
   getGradoById,
   updateGrado,
   deleteGrado,
+  getEstudiantesPorGrado
 };
