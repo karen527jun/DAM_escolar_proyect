@@ -33,14 +33,41 @@
             </span>
           </div>
           <div>
-            <ion-radio-group class="" v-if="alumnos?.length > 0">
-              <IonItem
-                v-for="value in alumnos"
-                class="flex justify-between py-2 w-full"
-              >
-                <ion-label>{{ value.nombre_completo }}</ion-label>
-
-                <ion-radio class="border rounded-full border-gray-300" />
+            <ion-radio-group
+              v-for="(value, index) in alumnos"
+              @ionChange="handleChange(value, $event.detail.value)"
+              class=""
+              v-if="alumnos?.length > 0"
+            >
+              <div class="flex justify-around"></div>
+              <IonItem class="flex justify-center items-center py-2">
+                <div class="">
+                  <small v-if="index == 0" class="">Nombre</small>
+                  <ion-label class="w-[100px]">{{
+                    value.nombre_completo
+                  }}</ion-label>
+                </div>
+                <div class="flex flex-col">
+                  <small v-if="index == 0">Presente</small>
+                  <ion-radio
+                    :value="'Presente'"
+                    class="border-l border-gray-300 h-full py-5 px-6 w-fit flex justify-center items-center"
+                  />
+                </div>
+                <div class="flex flex-col">
+                  <small v-if="index == 0">Ausente</small>
+                  <ion-radio
+                    :value="'Ausente'"
+                    class="border-x border-gray-300 h-full py-5 px-6 w-fit"
+                  />
+                </div>
+                <div class="flex flex-col">
+                  <small v-if="index == 0">justificado</small>
+                  <ion-radio
+                    :value="'Justificado'"
+                    class="border-r border-gray-300 h-full py-5 px-6 w-fit"
+                  />
+                </div>
               </IonItem>
             </ion-radio-group>
           </div>
@@ -48,7 +75,7 @@
             <ion-button
               color="primary"
               class="h-[60px] font-bold"
-              @click="crearEspecialidad()"
+              @click="guardarAsistencia"
               >Crear</ion-button
             >
             <ion-button
@@ -82,7 +109,7 @@ import {
   IonLabel,
   useIonRouter,
 } from "@ionic/vue";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import profesorServices from "@/services/profesor.services";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength, helpers } from "@vuelidate/validators";
@@ -93,6 +120,8 @@ const ionRouter = useIonRouter();
 const data = ref([]);
 const alumnos = ref([]);
 
+const isToastOpen = ref(false);
+const toastMessage = ref("");
 const especialidad = ref({
   nombre_especialidad: "",
 });
@@ -112,18 +141,44 @@ const getEstudiantesGrado = async () => {
     console.log(error);
   }
 };
-const crearEspecialidad = async () => {
+const objetoAsistenciaFinal = computed(() => {
+  return {
+    estudiantes: alumnos.value.map((alumno) => ({
+      // Aseguramos que solo incluya el NIE y el estado
+      NIE: alumno.nie,
+      // Si el estado es null, usamos 'No Seleccionado' por defecto
+      estado: alumno.estado || "No Seleccionado",
+    })),
+  };
+});
+const guardarAsistencia = async () => {
+  const datosAEnviar = objetoAsistenciaFinal.value;
+
+  console.log("Objeto de Asistencia listo para enviar:", datosAEnviar);
+
   try {
-    if (v$.value.$invalid) {
-      return;
-    }
-    const res = await especialidadServices.postEspecialidades(
-      especialidad.value
-    );
-    router.back();
+    // Ejemplo de simulación de envío a un API
+    // await fetch('/api/asistencia', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(datosAEnviar)
+    // });
+
+    toastMessage.value = "✅ Asistencia guardada con éxito.";
+    isToastOpen.value = true;
   } catch (error) {
-    console.log(error);
+    toastMessage.value = "❌ Error al guardar la asistencia.";
+    isToastOpen.value = true;
+    console.error("Error en la petición:", error);
   }
+};
+const handleChange = (alumno, nuevoEstado) => {
+  alumno.estado = nuevoEstado;
+};
+
+// Para el Toast
+const setToastOpen = (state) => {
+  isToastOpen.value = state;
 };
 
 getEstudiantesGrado();
