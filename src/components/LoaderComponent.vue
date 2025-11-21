@@ -1,6 +1,6 @@
 <template>
   <div
-    class="absolute w-full h-[100vh] bg-black/60 z-100 flex justify-center items-center"
+    class="absolute w-full h-[100vh] bg-black/10 backdrop-blur z-100 flex justify-center items-center"
   >
     <div class="loader">
       <div class="loader__balls">

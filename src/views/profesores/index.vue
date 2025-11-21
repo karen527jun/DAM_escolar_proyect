@@ -1,5 +1,6 @@
 <template>
   <ion-page>
+    <LoaderComponent v-if="loader"></LoaderComponent>
     <ion-header :translucent="true">
       <ion-toolbar class="h-[80px] flex items-center px-10">
         <ion-buttons slot="start">
@@ -28,9 +29,13 @@
               >Crear nuevo profesor</ion-button
             >
             <ion-item>
-              <ion-input></ion-input>
+              <ion-input
+                v-model="busqueda"
+                placeholder="Buscar profesor..."
+                @ionInput="profesoresFiltrados"
+              ></ion-input>
             </ion-item>
-            <CardDataComponent :headers="headers" :data="data">
+            <CardDataComponent :headers="headers" :data="profesoresFiltrados">
               <template v-slot:acciones="{ item }: profesores">
                 <div class="flex gap-2 mb-5">
                   <ion-button
@@ -100,9 +105,10 @@ import {
 } from "@ionic/vue";
 import CardDataComponent from "@/components/CardDataComponent.vue";
 import profesoresService from "@/services/profesor.services.js";
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import profesores from "@/interfaces/profesores.ts";
 import router from "@/router";
+import LoaderComponent from "@/components/LoaderComponent.vue";
 const headers = [
   {
     field: "id",
@@ -139,19 +145,32 @@ const headers = [
     header: "Acciones",
   },
 ];
+const loader = ref(false);
 const data = ref([]);
-
+const busqueda = ref("");
 const getData = async () => {
   try {
+    loader.value = true;
     const res: profesores = await profesoresService.getProfesores();
     data.value = res.data;
   } catch (error) {
     console.log(error);
+  } finally {
+    loader.value = false;
   }
 };
 const editarProfesor = (id: number) => {
   router.push({ name: "editarProfesor", params: { id: id } });
 };
+
+const profesoresFiltrados = computed(() => {
+  if (!busqueda.value) return data.value;
+  return data.value.filter((profesor) =>
+    profesor.nombre_completo
+      .toLowerCase()
+      .includes(busqueda.value.toLowerCase())
+  );
+});
 onMounted(() => {
   getData();
 });

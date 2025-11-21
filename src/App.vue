@@ -8,9 +8,9 @@
         type="overlay"
       >
         <ion-content>
+          <div class="menu-header"></div>
           <div class="p-4">
-            <ion-note class="">hi@ionicframework.com</ion-note>
-
+            <ion-note>hi@ionicframework.com</ion-note>
             <ion-menu-toggle
               :auto-hide="false"
               v-for="(p, i) in appPages"
@@ -22,14 +22,12 @@
                 :router-link="p.url"
                 lines="none"
                 :detail="false"
-                class="hydrated"
                 :class="{ selected: selectedIndex === i }"
               >
                 <ion-icon
                   aria-hidden="true"
                   slot="start"
-                  :ios="p.iosIcon"
-                  :md="p.mdIcon"
+                  :icon="p.icon"
                 ></ion-icon>
                 <ion-label class="ml-4">{{ p.title }}</ion-label>
               </ion-item>
@@ -55,7 +53,8 @@
           </div>
         </ion-content>
       </ion-menu>
-      <ion-router-outlet id="main-content"> </ion-router-outlet>
+
+      <ion-router-outlet id="main-content"></ion-router-outlet>
     </ion-split-pane>
   </ion-app>
 </template>
@@ -67,8 +66,6 @@ import {
   IonIcon,
   IonItem,
   IonLabel,
-  IonList,
-  IonListHeader,
   IonMenu,
   IonMenuToggle,
   IonNote,
@@ -78,66 +75,53 @@ import {
 } from "@ionic/vue";
 import { onMounted, ref } from "vue";
 import {
-  archiveOutline,
-  archiveSharp,
-  bookmarkOutline,
-  bookmarkSharp,
-  heartOutline,
-  heartSharp,
-  mailOutline,
-  mailSharp,
-  paperPlaneOutline,
-  paperPlaneSharp,
-  trashOutline,
-  trashSharp,
-  warningOutline,
-  warningSharp,
+  peopleOutline,
+  schoolOutline,
+  layersOutline,
+  personOutline,
+  clipboardOutline,
+  personCircleOutline,
+  briefcaseOutline,
 } from "ionicons/icons";
 
 const router = useIonRouter();
 const selectedIndex = ref(0);
+
 const appPages = [
   {
     title: "Usuarios",
     url: "/usuarios",
-    iosIcon: mailOutline,
-    mdIcon: mailSharp,
+    icon: peopleOutline,
   },
   {
     title: "Grados",
     url: "/grados",
-    iosIcon: heartOutline,
-    mdIcon: heartSharp,
+    icon: schoolOutline,
   },
   {
     title: "Secciones",
     url: "/secciones",
-    iosIcon: archiveOutline,
-    mdIcon: archiveSharp,
+    icon: layersOutline,
   },
   {
     title: "Profesores",
     url: "/profesores",
-    iosIcon: trashOutline,
-    mdIcon: trashSharp,
+    icon: personOutline,
   },
   {
     title: "Asistencia",
     url: "/asistencia",
-    iosIcon: warningOutline,
-    mdIcon: warningSharp,
+    icon: clipboardOutline,
   },
   {
     title: "Estudiantes",
     url: "/estudiantes",
-    iosIcon: warningOutline,
-    mdIcon: warningSharp,
+    icon: personCircleOutline,
   },
   {
     title: "Especialidades",
     url: "/especialidades",
-    iosIcon: warningOutline,
-    mdIcon: warningSharp,
+    icon: briefcaseOutline,
   },
 ];
 
@@ -145,7 +129,6 @@ const loggedIn = ref(true);
 
 const navegarRuta = (i) => {
   selectedIndex.value = i;
-
   router.push({ path: appPages[i].url });
 };
 const loggout = () => {
@@ -163,117 +146,51 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
-ion-menu ion-content {
-}
-
-ion-menu.md ion-content {
-  --padding-start: 8px;
-  --padding-end: 8px;
-  --padding-top: 20px;
-  --padding-bottom: 20px;
-}
-
-ion-menu.md ion-list {
-  padding: 20px 0;
+<style>
+.menu-header {
+  background-image: url("/menu_img.jpg");
+  background-size: cover;
+  background-position: center;
+  height: 150px;
+  width: 100%;
+  border-bottom: 1px solid #ddd;
 }
 
 ion-menu.md ion-note {
-  margin-bottom: 30px;
-}
-
-ion-menu.md ion-list-header,
-ion-menu.md ion-note {
+  margin-top: 10px;
+  margin-bottom: 25px;
+  display: block;
   padding-left: 10px;
+  color: #555;
 }
 
-ion-menu.md ion-list#inbox-list {
-  border-bottom: 1px solid var();
-}
-
-ion-menu.md ion-list#inbox-list ion-list-header {
-  font-size: 22px;
-  font-weight: 600;
-
-  min-height: 20px;
-}
-
-ion-menu.md ion-list#labels-list ion-list-header {
-  font-size: 16px;
-
-  margin-bottom: 18px;
-
-  min-height: 26px;
-}
-
-ion-menu.md ion-item {
-  --padding-start: 10px;
-  --padding-end: 10px;
-  border-radius: 4px;
-}
-
-ion-menu.md ion-item.selected {
-}
-
-ion-menu.md ion-item.selected ion-icon {
-  color: black;
-}
-
-ion-menu.md ion-item ion-icon {
-  color: black;
-}
-
-ion-menu.md ion-item ion-label {
-  font-weight: 500;
-}
-
-ion-menu.ios ion-content {
-  --padding-bottom: 20px;
-}
-
-ion-menu.ios ion-list {
-  padding: 20px 0 0 0;
-}
-
-ion-menu.ios ion-note {
-  line-height: 24px;
-  margin-bottom: 20px;
-}
-
-ion-menu.ios ion-item {
-  --padding-start: 16px;
-  --padding-end: 16px;
-  --min-height: 50px;
-}
-
-ion-menu.ios ion-item.selected ion-icon {
-}
-
-ion-menu.ios ion-item ion-icon {
-  font-size: 24px;
-  color: #73849a;
-}
-
-ion-menu.ios ion-list#labels-list ion-list-header {
-  margin-bottom: 8px;
-}
-
-ion-menu.ios ion-list-header,
-ion-menu.ios ion-note {
-  padding-left: 16px;
-  padding-right: 16px;
-}
-
-ion-menu.ios ion-note {
-  margin-bottom: 8px;
-}
-
-ion-note {
-  display: inline-block;
-  font-size: 16px;
+ion-item {
+  --padding-start: 12px;
+  --padding-end: 12px;
+  --min-height: 48px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease-in-out;
 }
 
 ion-item.selected {
-  --color: black;
+  background-color: #f2f2f2;
+}
+
+ion-item ion-icon {
+  font-size: 22px;
+  color: #333;
+}
+
+ion-item ion-label {
+  font-weight: 500;
+  color: #333;
+}
+.menu-header {
+  background-image: url("/menu_img.jpg");
+  background-size: cover;
+  background-position: center;
+  height: 180px;
+  width: 100%;
+  border-bottom: 1px solid #ddd;
 }
 </style>
