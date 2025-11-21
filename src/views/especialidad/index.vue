@@ -28,9 +28,15 @@
               >Crear nueva especialidad</ion-button
             >
             <ion-item>
-              <ion-input></ion-input>
+              <ion-input
+                v-model="busqueda"
+                placeholder="Buscar especialidad..."
+              ></ion-input>
             </ion-item>
-            <CardDataComponent :headers="headers" :data="data">
+            <CardDataComponent
+              :headers="headers"
+              :data="especialidadesFiltradas"
+            >
               <template #acciones>
                 <div class="flex gap-2">
                   <ion-button color="primary">Editar</ion-button>
@@ -60,9 +66,10 @@ import {
 } from "@ionic/vue";
 import CardDataComponent from "@/components/CardDataComponent.vue";
 import especialidadesServices from "@/services/especialidad.services.js";
-import { onMounted, Ref, ref } from "vue";
+import { computed, onMounted, Ref, ref } from "vue";
 import Especialidad from "@/interfaces/especialidades";
 import LoaderComponent from "@/components/LoaderComponent.vue";
+const busqueda = ref("");
 const headers = [
   {
     field: "id_especialidad",
@@ -87,6 +94,14 @@ const getEspecialidad = async () => {
   }
 };
 
+const especialidadesFiltradas = computed(() => {
+  if (!busqueda.value) return data.value;
+  return data.value.filter((especialidad) =>
+    especialidad.nombre_especialidad
+      .toLowerCase()
+      .includes(busqueda.value.toLowerCase())
+  );
+});
 onMounted(() => {
   getEspecialidad();
 });

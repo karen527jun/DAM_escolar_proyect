@@ -1,5 +1,6 @@
 <template>
   <ion-page>
+    <LoaderComponent v-if="loader"></LoaderComponent>
     <ion-header :translucent="true">
       <ion-toolbar class="h-[80px] flex items-center">
         <ion-buttons slot="start">
@@ -24,9 +25,12 @@
           <h1 class="text-center !font-bold !mb-10">Usuarios</h1>
           <div class="flex flex-col items-center justify-center gap-10">
             <ion-item>
-              <ion-input></ion-input>
+              <ion-input
+                placeholder="Buscar usuarios..."
+                v-model="busqueda"
+              ></ion-input>
             </ion-item>
-            <CardDataComponent :headers="headers" :data="data">
+            <CardDataComponent :headers="headers" :data="usuariosFiltrados">
               <template #acciones>
                 <div class="flex gap-2">
                   <ion-button color="danger" fill="outline">
@@ -77,7 +81,10 @@ import {
 } from "@ionic/vue";
 import CardDataComponent from "@/components/CardDataComponent.vue";
 import usuarioServices from "@/services/usuarios.services.js";
-import { ref } from "vue";
+import { computed, ref } from "vue";
+import LoaderComponent from "@/components/LoaderComponent.vue";
+
+const loader = ref(false);
 const headers = [
   {
     field: "username",
@@ -119,10 +126,26 @@ const data = ref([
 ]);
 const getUsuarios = async () => {
   try {
+    loader.value = true;
     const res = await usuarioServices.getUsuarios();
     data.value = res.data;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  } finally {
+    loader.value = false;
+  }
 };
+
+const busqueda = ref("");
+const usuariosFiltrados = computed(() => {
+  if (!busqueda.value) return data.value;
+
+  return data.value.filter((usuario) => {
+    return usuario.username
+      .toLowerCase()
+      .includes(busqueda.value.toLowerCase());
+  });
+});
 
 getUsuarios();
 </script>

@@ -1,5 +1,6 @@
 <template>
   <ion-page>
+    <LoaderComponent v-if="loader"></LoaderComponent>
     <ion-header :translucent="true">
       <ion-toolbar class="h-[80px] flex items-center px-10">
         <ion-buttons slot="start">
@@ -20,9 +21,12 @@
               >Crear nueva Sección</ion-button
             >
             <ion-item>
-              <ion-input></ion-input>
+              <ion-input
+                v-model="busqueda"
+                placeholder="Buscar sección..."
+              ></ion-input>
             </ion-item>
-            <CardDataComponent :headers="headers" :data="data">
+            <CardDataComponent :headers="headers" :data="seccionesFiltradas">
               <template #acciones>
                 <div class="flex gap-2">
                   <ion-button color="primary">Editar</ion-button>
@@ -52,9 +56,12 @@ import {
 } from "@ionic/vue";
 import CardDataComponent from "@/components/CardDataComponent.vue";
 import Seccion from "@/interfaces/secciones";
-import { onMounted, Ref, ref } from "vue";
+import { computed, onMounted, Ref, ref } from "vue";
 import seccionServices from "@/services/seccion.services";
+import LoaderComponent from "@/components/LoaderComponent.vue";
 
+const loader = ref(false);
+const busqueda = ref("");
 const headers = [
   {
     field: "nombre_seccion",
@@ -73,14 +80,26 @@ const data: Ref<Seccion[]> = ref([]);
 
 const getSecciones = async () => {
   try {
+    loader.value = true;
     const res = await seccionServices.getSecciones();
     console.log(res.data);
     data.value = res.data;
   } catch (error) {
     console.log(error);
+  } finally {
+    loader.value = false;
   }
 };
 
+const seccionesFiltradas = computed(() => {
+  if (!busqueda.value) return data.value;
+
+  return data.value.filter((seccion) => {
+    return seccion.nombre_seccion
+      .toLowerCase()
+      .includes(busqueda.value.toLowerCase());
+  });
+});
 onMounted(() => {
   getSecciones();
 });

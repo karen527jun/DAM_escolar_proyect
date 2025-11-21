@@ -23,10 +23,6 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("../views/usuarios/crearUsuario.vue"),
   },
   {
-    path: "/materias",
-    component: () => import("../views/materias/index.vue"),
-  },
-  {
     path: "/grados",
     component: () => import("../views/grados/index.vue"),
   },

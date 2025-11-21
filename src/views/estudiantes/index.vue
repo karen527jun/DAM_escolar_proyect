@@ -1,5 +1,6 @@
 <template>
   <ion-page>
+    <LoaderComponent v-if="loader"></LoaderComponent>
     <ion-header :translucent="true">
       <ion-toolbar class="h-[80px] flex items-center px-10">
         <ion-buttons slot="start">
@@ -22,9 +23,13 @@
               >Crear nuevo estudiante</ion-button
             >
             <ion-item>
-              <ion-input></ion-input>
+              <ion-input
+                v-model="busqueda"
+                placeholder="Buscar alumno..."
+                @ionInput="filtrarAlumnos"
+              ></ion-input>
             </ion-item>
-            <CardDataComponent :headers="headers" :data="data">
+            <CardDataComponent :headers="headers" :data="estudiantesFiltrados">
               <template v-slot:acciones="{ item }: profesores">
                 <div class="flex gap-2 mb-5">
                   <ion-button
@@ -95,10 +100,13 @@ import {
 import Estudiante from "@/interfaces/estudiantes";
 import CardDataComponent from "@/components/CardDataComponent.vue";
 import estudiantesService from "@/services/estudiantes.services.js";
-import { onMounted, Ref, ref } from "vue";
+import { computed, onMounted, Ref, ref } from "vue";
+import LoaderComponent from "@/components/LoaderComponent.vue";
+
 // import estudiantes from "@/interfaces/.ts";
 import router from "@/router";
 
+const busqueda = ref("");
 const headers = [
   {
     field: "NIE",
@@ -144,15 +152,28 @@ const headers = [
   },
 ];
 const data: Ref<Estudiante[]> = ref([]);
-
+const loader = ref(false);
 const getData = async () => {
   try {
+    loader.value = true;
     const res = await estudiantesService.getEstudiantes();
     data.value = res.data;
   } catch (error) {
     console.log(error);
+  } finally {
+    loader.value = false;
   }
 };
+
+const estudiantesFiltrados = computed(() => {
+  if (!busqueda.value) return data.value;
+
+  return data.value.filter((estudiante) =>
+    estudiante.nombre_completo
+      .toLowerCase()
+      .includes(busqueda.value.toLowerCase())
+  );
+});
 
 onMounted(() => {
   getData();

@@ -1,5 +1,6 @@
 <template>
   <ion-page>
+    <LoaderComponent v-if="loader"></LoaderComponent>
     <ion-header :translucent="true">
       <ion-toolbar class="h-[80px] flex items-center px-10">
         <ion-buttons slot="start">
@@ -62,10 +63,10 @@ import Grados from "@/interfaces/Grados";
 import { ref, onMounted, computed, Ref } from "vue";
 import CardDataComponent from "@/components/CardDataComponent.vue";
 import gradosService from "@/services/grado.services.js";
-
+import LoaderComponent from "@/components/LoaderComponent.vue";
 const grados: Ref<Grados[]> = ref([]);
 const busqueda = ref("");
-
+const loader = ref(false);
 const headers = [
   { field: "nombre_grado", header: "Nombre del grado" },
   { field: "especialidad", header: "Especialidad" },
@@ -77,10 +78,13 @@ const headers = [
 
 const cargarGrados = async () => {
   try {
+    loader.value = true;
     const res = await gradosService.getGrados();
     grados.value = res.data || [];
   } catch (error) {
     console.error("Error al cargar grados:", error);
+  } finally {
+    loader.value = false;
   }
 };
 
@@ -92,10 +96,6 @@ const gradosFiltrados = computed(() => {
 });
 
 const filtrarGrados = () => {};
-
-const crearGrado = () => {
-  alert("Aquí se abriría el formulario para crear un nuevo grado");
-};
 
 const editarGrado = (grado) => {
   console.log("Editar grado:", grado);
