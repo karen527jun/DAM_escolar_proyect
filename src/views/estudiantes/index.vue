@@ -96,6 +96,7 @@ import {
   IonTitle,
   IonToolbar,
   IonButton,
+  toastController,
 } from "@ionic/vue";
 import Estudiante from "@/interfaces/estudiantes";
 import CardDataComponent from "@/components/CardDataComponent.vue";
@@ -160,6 +161,12 @@ const getData = async () => {
     data.value = res.data;
   } catch (error) {
     console.log(error);
+    let toast = await toastController.create({
+      message: "Error al obtener la data",
+      duration: 2000,
+      color: "danger",
+    });
+    return toast.present();
   } finally {
     loader.value = false;
   }

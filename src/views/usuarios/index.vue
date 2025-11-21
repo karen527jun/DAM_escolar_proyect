@@ -78,6 +78,7 @@ import {
   IonTitle,
   IonToolbar,
   IonButton,
+  toastController,
 } from "@ionic/vue";
 import CardDataComponent from "@/components/CardDataComponent.vue";
 import usuarioServices from "@/services/usuarios.services.js";
@@ -131,6 +132,12 @@ const getUsuarios = async () => {
     data.value = res.data;
   } catch (error) {
     console.log(error);
+    let toast = await toastController.create({
+      message: "Error al obtener la data",
+      duration: 2000,
+      color: "danger",
+    });
+    return toast.present();
   } finally {
     loader.value = false;
   }

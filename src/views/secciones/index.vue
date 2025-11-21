@@ -53,6 +53,7 @@ import {
   IonItem,
   IonInput,
   IonButton,
+  toastController,
 } from "@ionic/vue";
 import CardDataComponent from "@/components/CardDataComponent.vue";
 import Seccion from "@/interfaces/secciones";
@@ -86,6 +87,12 @@ const getSecciones = async () => {
     data.value = res.data;
   } catch (error) {
     console.log(error);
+    let toast = await toastController.create({
+      message: "Error al obtener la data",
+      duration: 2000,
+      color: "danger",
+    });
+    return toast.present();
   } finally {
     loader.value = false;
   }

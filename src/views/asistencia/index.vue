@@ -1,5 +1,6 @@
 <template>
   <ion-page>
+    <LoaderComponent v-if="loader"></LoaderComponent>
     <ion-header :translucent="true">
       <ion-toolbar class="h-[80px] flex items-center px-10">
         <ion-buttons slot="start">
@@ -51,8 +52,10 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  toastController,
 } from "@ionic/vue";
 import { onMounted, Ref, ref } from "vue";
+import LoaderComponent from "@/components/LoaderComponent.vue";
 
 const headers = [
   {
@@ -97,14 +100,24 @@ const data = ref([
     grado: "Tercero",
   },
 ]);
+
+const loader = ref(false);
 const grados: Ref<Grado[]> = ref([]);
 const getSecciones = async () => {
   try {
+    loader.value = true;
     const res = await gradoServices.getGrados();
     grados.value = res.data.filter((grado) => grado.seccion !== null);
-    console.log(grados.value);
   } catch (error) {
     console.log(error);
+    let toast = await toastController.create({
+      message: "Error al obtener la data",
+      duration: 2000,
+      color: "danger",
+    });
+    return toast.present();
+  } finally {
+    loader.value = false;
   }
 };
 onMounted(() => {

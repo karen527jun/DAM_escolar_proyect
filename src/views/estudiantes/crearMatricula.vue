@@ -66,6 +66,7 @@ import {
   IonButton,
   IonRadio,
   IonRadioGroup,
+  toastController,
 } from "@ionic/vue";
 import seccionesServices from "@/services/seccion.services.js";
 import { onMounted, ref } from "vue";
@@ -92,8 +93,14 @@ const handleChange = (event) => {
 const crearMatricula = async () => {
   try {
     const res = await estudiantesServices.postMatricula(matricula.value);
-    console.log(res);
-
+    if (res.status == 200) {
+      let toast = await toastController.create({
+        message: "Matricula creada con exito",
+        duration: 2000,
+        color: "success",
+      });
+      toast.present();
+    }
     router.push("/estudiantes");
   } catch (error) {
     console.log(error);

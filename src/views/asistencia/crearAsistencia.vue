@@ -18,19 +18,55 @@
           <div>
             <ion-item>
               <ion-input
-                v-model="v$.nombre_especialidad.$model"
+                v-model="v$.fecha.$model"
                 placeholder="00/00/0000"
-                type="text"
+                type="date"
                 label="Fecha"
               ></ion-input>
             </ion-item>
+            <ion-item>
+              <ion-select
+                v-model="v$.grado.$model"
+                placeholder="Seleccione un grado"
+                type="text"
+                label="Grado"
+              >
+                <ion-select-option
+                  v-for="value in grados"
+                  :key="value.id_grado"
+                  :value="value.id_grado"
+                  >{{ value.nombre_grado }}</ion-select-option
+                >
+              </ion-select>
+            </ion-item>
+            <ion-item>
+              <ion-select
+                v-model="v$.seccion.$model"
+                placeholder="Seleccione una sección"
+                type="text"
+                label="Sección"
+                :disabled="!v$.grado.$model"
+              >
+                <ion-select-option
+                  v-for="value in seccionesFiltradas"
+                  :key="value.id_seccion"
+                  :value="value.id_seccion"
+                  >{{ value.nombre_seccion }}</ion-select-option
+                >
+              </ion-select>
+            </ion-item>
             <span
-              v-if="v$.nombre_especialidad.$error"
-              v-for="value in v$.nombre_especialidad.$errors"
+              v-if="v$.seccion.$error"
+              v-for="value in v$.seccion.$errors"
               class="text-[12px] text-red-500 ml-5"
             >
               {{ value.$message }}
             </span>
+          </div>
+          <div class="flex justify-center">
+            <ion-button fill="outline" @click="generarHojaAsistencia">
+              Generar nueva hoja de asistencia</ion-button
+            >
           </div>
           <div>
             <ion-radio-group
@@ -47,21 +83,21 @@
                     value.nombre_completo
                   }}</ion-label>
                 </div>
-                <div class="flex flex-col">
+                <div class="flex flex-col justify-center items-center">
                   <small v-if="index == 0">Presente</small>
                   <ion-radio
                     :value="'Presente'"
                     class="border-l border-gray-300 h-full py-5 px-6 w-fit flex justify-center items-center"
                   />
                 </div>
-                <div class="flex flex-col">
+                <div class="flex flex-col justify-center items-center">
                   <small v-if="index == 0">Ausente</small>
                   <ion-radio
                     :value="'Ausente'"
                     class="border-x border-gray-300 h-full py-5 px-6 w-fit"
                   />
                 </div>
-                <div class="flex flex-col">
+                <div class="flex flex-col justify-center items-center">
                   <small v-if="index == 0">justificado</small>
                   <ion-radio
                     :value="'Justificado'"
@@ -108,13 +144,17 @@ import {
   IonRadioGroup,
   IonLabel,
   useIonRouter,
+  IonSelect,
+  IonSelectOption,
 } from "@ionic/vue";
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import profesorServices from "@/services/profesor.services";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength, helpers } from "@vuelidate/validators";
 import especialidadServices from "@/services/especialidad.services.js";
 import gradosServices from "@/services/grado.services.js";
+import seccionServices from "@/services/seccion.services.js";
+import asistenciaServices from "@/services/asistencia.services.js";
 import router from "@/router";
 const ionRouter = useIonRouter();
 const data = ref([]);
@@ -122,15 +162,23 @@ const alumnos = ref([]);
 
 const isToastOpen = ref(false);
 const toastMessage = ref("");
-const especialidad = ref({
-  nombre_especialidad: "",
+const asistencia = ref({
+  grado: "",
+  seccion: "",
+  fecha: "",
 });
 const rules = {
-  nombre_especialidad: {
+  grado: {
+    required: helpers.withMessage("El nombre es requerido", required),
+  },
+  seccion: {
+    required: helpers.withMessage("El nombre es requerido", required),
+  },
+  fecha: {
     required: helpers.withMessage("El nombre es requerido", required),
   },
 };
-const v$ = useVuelidate(rules, especialidad);
+const v$ = useVuelidate(rules, asistencia);
 
 const getEstudiantesGrado = async () => {
   try {
@@ -151,19 +199,31 @@ const objetoAsistenciaFinal = computed(() => {
     })),
   };
 });
+
+const generarHojaAsistencia = async () => {
+  try {
+    const res = await asistenciaServices.generarHoja(asistencia.value);
+    if (res) {
+      console.log(asistencia.value);
+
+      const hoja = await asistenciaServices.getHojas({
+        grado: asistencia.value.grado,
+        seccion: asistencia.value.seccion,
+        fecha: asistencia.value.fecha,
+      });
+      console.log(hoja);
+    }
+    console.log(res);
+  } catch (error) {
+    console.log(error);
+  }
+};
 const guardarAsistencia = async () => {
   const datosAEnviar = objetoAsistenciaFinal.value;
 
   console.log("Objeto de Asistencia listo para enviar:", datosAEnviar);
 
   try {
-    // Ejemplo de simulación de envío a un API
-    // await fetch('/api/asistencia', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(datosAEnviar)
-    // });
-
     toastMessage.value = "✅ Asistencia guardada con éxito.";
     isToastOpen.value = true;
   } catch (error) {
@@ -176,12 +236,45 @@ const handleChange = (alumno, nuevoEstado) => {
   alumno.estado = nuevoEstado;
 };
 
-// Para el Toast
-const setToastOpen = (state) => {
-  isToastOpen.value = state;
+// OBTENER GRADOS ----------------------------------------------------------------------
+const grados = ref([]);
+const getGrados = async () => {
+  try {
+    const res = await gradosServices.getGrados();
+    grados.value = res.data;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-getEstudiantesGrado();
+// OBTENER SECCIONES ----------------------------------------------------------------------
+const secciones = ref([]);
+const getSecciones = async () => {
+  try {
+    const res = await seccionServices.getSecciones();
+    secciones.value = res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+const seccionesFiltradas = ref([]);
+
+watch(
+  () => asistencia.value.grado,
+  (grado) => {
+    const resultadoFiltro = secciones.value.filter(
+      (seccion) => seccion.id_grado === grado
+    );
+    seccionesFiltradas.value = resultadoFiltro;
+
+    console.log(asistencia.value);
+  }
+);
+onMounted(() => {
+  // getEstudiantesGrado();
+  getGrados();
+  getSecciones();
+});
 </script>
 
 <style scoped>
