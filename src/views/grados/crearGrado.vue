@@ -144,7 +144,7 @@ import {
   IonSelectOption,
 } from "@ionic/vue";
 import { onMounted, ref } from "vue";
-import gradoServices from "@/services/grado.services"; // Debes crear este servicio
+import gradoServices from "@/services/grado.services";
 import { useVuelidate } from "@vuelidate/core";
 import { required, minValue, helpers } from "@vuelidate/validators";
 import profesorServices from "@/services/profesor.services";
