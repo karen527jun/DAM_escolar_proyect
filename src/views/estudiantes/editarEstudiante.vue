@@ -17,6 +17,13 @@
         <div class="grid grid-cols-1 gap-6 px-4">
           <div>
             <ion-item>
+              <ion-toggle
+                v-model="v$.estado.$model"
+                :enable-on-off-labels="true"
+                >Activo</ion-toggle
+              >
+            </ion-item>
+            <ion-item>
               <ion-input
                 v-model="v$.NIE.$model"
                 placeholder="NIE"
@@ -143,7 +150,10 @@
           </div>
           <span class="ml-4 font-bold">Género</span>
           <div>
-            <ion-radio-group @ion-change="handleChange($event)">
+            <ion-radio-group
+              :value="estudiante.genero_del_alumno"
+              @ion-change="handleChange($event)"
+            >
               <ion-item>
                 <ion-radio value="F">Femenino</ion-radio>
               </ion-item>
@@ -196,12 +206,13 @@
               {{ value.$message }}
             </span>
           </div>
+
           <div class="my-10 flex flex-col gap-5 justify-center mx-5">
             <ion-button
               color="primary"
               class="h-[60px] font-bold"
-              @click="crearEstudiante()"
-              >Crear</ion-button
+              @click="editarEstudiante()"
+              >Editar</ion-button
             >
             <ion-button
               fill="outline"
@@ -234,13 +245,15 @@ import {
   IonLabel,
   toastController,
   useIonRouter,
+  IonToggle,
 } from "@ionic/vue";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import estudiantesService from "@/services/estudiantes.services";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength, helpers } from "@vuelidate/validators";
+import { useRouter } from "vue-router";
 
-const router = useIonRouter();
+const router = useRouter();
 
 const estudiante = ref({
   NIE: "",
@@ -253,7 +266,7 @@ const estudiante = ref({
   genero_del_alumno: "",
   nombre_responsable: "",
   dui: "",
-  estado: true,
+  estado: false,
 });
 const rules = {
   NIE: {
@@ -293,6 +306,9 @@ const rules = {
   dui: {
     required: helpers.withMessage("El DUI es requerido", required),
   },
+  estado: {
+    required: helpers.withMessage("El estado es requerido", required),
+  },
 };
 
 const v$ = useVuelidate(rules, estudiante);
@@ -301,7 +317,36 @@ const handleChange = (event: any) => {
   estudiante.value.genero_del_alumno = event.detail.value;
 };
 
-const crearEstudiante = async () => {
+const getEstudiante = async () => {
+  try {
+    const res = await estudiantesService.getEstudiantes();
+    let estudianteData = res.data.filter(
+      (estudiante) => estudiante.NIE == router.currentRoute.value.params.id
+    )[0];
+    estudiante.value = estudianteData;
+    estudiante.value.fecha_de_nacimiento =
+      estudianteData.fecha_de_nacimiento.split("T")[0];
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const matricula = ref({
+  id_seccion: "",
+});
+const getMatricula = async () => {
+  try {
+    const res = await estudiantesService.getMatricula({
+      table: "matricula",
+      column: "NIE",
+      valor: router.currentRoute.value.params.id,
+    });
+    matricula.value = res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+const editarEstudiante = async () => {
   try {
     if (v$.value.$invalid) {
       v$.value.$touch();
@@ -313,10 +358,10 @@ const crearEstudiante = async () => {
       return toast.present();
     }
 
-    const res = await estudiantesService.postEstudiantes(estudiante.value);
+    const res = await estudiantesService.putEstudiantes(estudiante.value);
     if (res.status == 200) {
       let toast = await toastController.create({
-        message: "Estudiante creado con exito",
+        message: "Estudiante editado con exito",
         duration: 2000,
         color: "success",
       });
@@ -334,10 +379,11 @@ const crearEstudiante = async () => {
         dui: "",
         estado: 1,
       };
-      router.push("/crear-matricula/" + res.data.data.nie);
+      //   router.push("/crear-matricula/" + res.data.data.nie);
+      router.push("/estudiantes");
     } else {
       let toast = await toastController.create({
-        message: "Error al crear el profesor",
+        message: "Error al editar el estudiante",
         duration: 2000,
         color: "danger",
       });
@@ -347,6 +393,11 @@ const crearEstudiante = async () => {
     console.log(error);
   }
 };
+
+onMounted(() => {
+  getEstudiante();
+  getMatricula();
+});
 </script>
 
 <style scoped>

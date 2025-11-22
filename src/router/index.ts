@@ -62,8 +62,12 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("../views/asistencia/index.vue"),
   },
   {
-    path: "/crear-asistencia/:id",
+    path: "/crear-asistencia/",
     component: () => import("../views/asistencia/crearAsistencia.vue"),
+  },
+  {
+    path: "/ver-asistencia/:id/:seccion",
+    component: () => import("../views/asistencia/verAsistencia.vue"),
   },
   {
     path: "/editar-asistencia/:id",
@@ -77,6 +81,11 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/crear-estudiante",
     component: () => import("../views/estudiantes/crearEstudiante.vue"),
+  },
+  {
+    path: "/editar-estudiante/:id",
+    name: "editarEstudiante",
+    component: () => import("../views/estudiantes/editarEstudiante.vue"),
   },
   {
     path: "/crear-matricula/:nie",

@@ -33,7 +33,7 @@
               <template v-slot:acciones="{ item }: profesores">
                 <div class="flex gap-2 mb-5">
                   <ion-button
-                    @click="editarProfesor(item.id)"
+                    @click="editarEstudiante(item.NIE)"
                     color="primary"
                     fill="outline"
                   >
@@ -154,6 +154,12 @@ const headers = [
 ];
 const data: Ref<Estudiante[]> = ref([]);
 const loader = ref(false);
+
+const editarEstudiante = (estudiante) => {
+  router.push({
+    path: `/editar-estudiante/${estudiante}`,
+  });
+};
 const getData = async () => {
   try {
     loader.value = true;

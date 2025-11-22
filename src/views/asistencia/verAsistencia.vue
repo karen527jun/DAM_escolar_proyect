@@ -12,9 +12,13 @@
     <ion-content :fullscreen="true">
       <div>
         <h1 class="text-center !font-bold !my-10 text-gray-500">
-          Crear nueva asistencia
+          Ver asistencia
         </h1>
         <div class="grid grid-cols-1 gap-6 px-4">
+          <div class="text-center text-blue-700 text-[30px]">
+            {{ asistencia.grado.nombre_grado }}
+            {{ asistencia.seccion.nombre_seccion }}
+          </div>
           <div>
             <ion-item>
               <ion-input
@@ -24,19 +28,13 @@
                 label="Fecha"
               ></ion-input>
             </ion-item>
-            <span
-              v-if="v$.fecha.$error"
-              v-for="value in v$.fecha.$errors"
-              class="text-[12px] text-red-500 ml-5"
-            >
-              {{ value.$message }}
-            </span>
-            <ion-item>
+            <!-- <ion-item>
               <ion-select
                 v-model="v$.grado.$model"
                 placeholder="Seleccione un grado"
                 type="text"
                 label="Grado"
+                disabled
               >
                 <ion-select-option
                   v-for="value in grados"
@@ -46,20 +44,13 @@
                 >
               </ion-select>
             </ion-item>
-            <span
-              v-if="v$.grado.$error"
-              v-for="value in v$.grado.$errors"
-              class="text-[12px] text-red-500 ml-5"
-            >
-              {{ value.$message }}
-            </span>
             <ion-item>
               <ion-select
                 v-model="v$.seccion.$model"
                 placeholder="Seleccione una sección"
                 type="text"
                 label="Sección"
-                :disabled="!v$.grado.$model"
+                disabled
               >
                 <ion-select-option
                   v-for="value in seccionesFiltradas"
@@ -68,26 +59,30 @@
                   >{{ value.nombre_seccion }}</ion-select-option
                 >
               </ion-select>
-            </ion-item>
-            <span
+            </ion-item> -->
+            <!-- <span
               v-if="v$.seccion.$error"
               v-for="value in v$.seccion.$errors"
               class="text-[12px] text-red-500 ml-5"
             >
               {{ value.$message }}
-            </span>
+            </span> -->
           </div>
           <div class="flex justify-center">
-            <ion-button fill="outline" @click="generarHojaAsistencia">
-              Generar nueva hoja de asistencia</ion-button
+            <ion-button
+              :disabled="!v$.fecha.$model"
+              fill="outline"
+              @click="generarHojaAsistencia"
+            >
+              Ver hoja de asistencia</ion-button
             >
           </div>
           <div>
             <ion-radio-group
-              value="Ausente"
               v-for="(value, index) in alumnos"
               @ionChange="handleChange(value, $event.detail.value)"
               class=""
+              :value="value.estado"
               v-if="alumnos?.length > 0"
             >
               <div class="flex justify-around"></div>
@@ -124,17 +119,11 @@
           </div>
           <div class="my-10 flex flex-col gap-5 justify-center mx-5">
             <ion-button
-              color="primary"
-              class="h-[60px] font-bold"
-              @click="guardarAsistencia"
-              >Crear</ion-button
-            >
-            <ion-button
               fill="outline"
               color="dark"
               class="h-[60px] font-bold"
               @click="$router.push('/asistencia')"
-              >Cancelar</ion-button
+              >Volver</ion-button
             >
           </div>
         </div>
@@ -170,12 +159,13 @@ import especialidadServices from "@/services/especialidad.services.js";
 import gradosServices from "@/services/grado.services.js";
 import seccionServices from "@/services/seccion.services.js";
 import asistenciaServices from "@/services/asistencia.services.js";
-import router from "@/router";
+import { useRouter } from "vue-router";
 const data = ref([]);
 const alumnos = ref([]);
 const idAsistencia = ref("");
 const isToastOpen = ref(false);
 const toastMessage = ref("");
+const router = useRouter();
 const asistencia = ref({
   grado: "",
   seccion: "",
@@ -183,13 +173,13 @@ const asistencia = ref({
 });
 const rules = {
   grado: {
-    required: helpers.withMessage("El grado es requerido", required),
+    required: helpers.withMessage("El nombre es requerido", required),
   },
   seccion: {
-    required: helpers.withMessage("La seccion es requerido", required),
+    required: helpers.withMessage("El nombre es requerido", required),
   },
   fecha: {
-    required: helpers.withMessage("La fecha es requerida", required),
+    required: helpers.withMessage("El nombre es requerido", required),
   },
 };
 const v$ = useVuelidate(rules, asistencia);
@@ -212,25 +202,21 @@ const objetoAsistenciaFinal = computed(() => {
 
 const generarHojaAsistencia = async () => {
   try {
-    const validation = await v$.value.$validate();
-    if (!validation) {
-      return;
-    }
-    const res = await asistenciaServices.generarHoja(asistencia.value);
-    if (res) {
-      const hoja = await asistenciaServices.getHojas({
-        grado: asistencia.value.grado,
-        seccion: asistencia.value.seccion,
-        fecha: asistencia.value.fecha,
-      });
-      alumnos.value = hoja.data;
-    }
+    const hoja = await asistenciaServices.getHojas({
+      grado: asistencia.value.grado.id_grado,
+      seccion: asistencia.value.seccion.id_seccion,
+      fecha: asistencia.value.fecha,
+    });
+    alumnos.value = hoja.data;
   } catch (error) {
     console.log(error);
   }
 };
 const guardarAsistencia = async () => {
   const datosAEnviar = objetoAsistenciaFinal.value;
+
+  console.log("Objeto de Asistencia listo para enviar:", datosAEnviar);
+
   try {
     await asistenciaServices.cargarAsistencias(datosAEnviar);
     toastMessage.value = "Asistencia guardada con éxito.";
@@ -252,6 +238,10 @@ const getGrados = async () => {
   try {
     const res = await gradosServices.getGrados();
     grados.value = res.data;
+    asistencia.value.grado = grados.value.filter(
+      (grado) => grado.id_grado == router.currentRoute.value.params.id
+    )[0];
+    console.log(asistencia.value);
   } catch (error) {
     console.log(error);
   }
@@ -263,6 +253,10 @@ const getSecciones = async () => {
   try {
     const res = await seccionServices.getSecciones();
     secciones.value = res.data;
+    asistencia.value.seccion = secciones.value.filter(
+      (seccion) =>
+        seccion.nombre_seccion == router.currentRoute.value.params.seccion
+    )[0];
   } catch (error) {
     console.log(error);
   }

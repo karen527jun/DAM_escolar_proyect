@@ -17,18 +17,23 @@
             Asistencia
           </h1>
           <div class="flex flex-col items-center justify-center gap-10">
-            <!-- <ion-button
+            <ion-button
               class="h-[60px]"
               @click="$router.push('/crear-asistencia')"
-              >Crear nueva asistencia</ion-button -->
-            <!-- > -->
+              >Crear nueva asistencia</ion-button
+            >
+
             <CardDataComponent :headers="headers" :data="grados">
               <template v-slot:acciones="{ item }">
                 <div class="flex gap-2">
                   <ion-button
                     color="primary"
-                    @click="$router.push(`/crear-asistencia/${item.id_grado}`)"
-                    >Agregar Asistencia</ion-button
+                    @click="
+                      $router.push(
+                        `/ver-asistencia/${item.id_grado}/${item.seccion}`
+                      )
+                    "
+                    >Ver asistencia</ion-button
                   >
                 </div>
               </template>
