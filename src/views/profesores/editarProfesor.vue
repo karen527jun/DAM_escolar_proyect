@@ -12,9 +12,16 @@
     <ion-content :fullscreen="true">
       <div>
         <h1 class="text-center !font-bold !mb-10 text-gray-500">
-          Crear nuevo profesor
+          Editar profesor
         </h1>
         <div class="grid grid-cols-1 gap-6 px-4">
+          <div>
+            <ion-item>
+              <ion-toggle v-model="estado" :enable-on-off-labels="true"
+                >Activo</ion-toggle
+              >
+            </ion-item>
+          </div>
           <div>
             <ion-item>
               <ion-input
@@ -85,7 +92,10 @@
           </div>
           <span class="ml-4 font-bold">Género</span>
           <div>
-            <ion-radio-group @ion-change="handleChange($event)">
+            <ion-radio-group
+              :value="profesor.genero"
+              @ion-change="handleChange($event)"
+            >
               <ion-item>
                 <ion-radio value="F">Femenino</ion-radio>
               </ion-item>
@@ -190,14 +200,16 @@ import {
   IonLabel,
   toastController,
   useIonRouter,
+  IonToggle,
 } from "@ionic/vue";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import profesorServices from "@/services/profesor.services";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength, helpers } from "@vuelidate/validators";
+import { useRouter } from "vue-router";
 
 const router = useIonRouter();
-
+const route = useRouter();
 const profesor = ref({
   nombre_completo: "",
   correo: "",
@@ -207,6 +219,7 @@ const profesor = ref({
   username: "",
   password: "",
 });
+const estado = ref(false);
 const secondPassword = ref();
 const rules = {
   nombre_completo: {
@@ -239,6 +252,37 @@ const handleChange = (event: any) => {
   profesor.value.genero = event.detail.value;
 };
 
+const getProfesor = async () => {
+  try {
+    const res = await profesorServices.getProfesorById({
+      valor: route.currentRoute.value.params.id,
+      table: "profesores",
+      column: "id_profesor",
+    });
+
+    profesor.value = res.data[0][0];
+    getUsuario(res.data[0][0].id_usuario);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getUsuario = async (id) => {
+  try {
+    const res = await profesorServices.getProfesorById({
+      valor: route.currentRoute.value.params.id,
+      table: "usuarios",
+      column: "id",
+    });
+
+    profesor.value.username = res.data[0][0].username;
+    profesor.value.password = res.data[0][0].password;
+    secondPassword.value = res.data[0][0].password;
+    estado.value = Boolean(res.data[0][0].activo.data[0]);
+  } catch (error) {
+    console.log(error);
+  }
+};
 const crearProfesor = async () => {
   try {
     if (v$.value.$invalid) {
@@ -258,8 +302,23 @@ const crearProfesor = async () => {
       });
       return toast.present();
     }
-    const res = await profesorServices.postProfesores(profesor.value);
-    if (res.status == 200) {
+    const res = await profesorServices.putProfesores({
+      id_profesor: route.currentRoute.value.params.id,
+      nombre_completo: profesor.value.nombre_completo,
+      correo: profesor.value.correo,
+      telefono: profesor.value.telefono,
+      direccion: profesor.value.direccion,
+      genero: profesor.value.genero,
+      usuario: {
+        id: profesor.value.id_usuario,
+        username: profesor.value.username,
+        password: profesor.value.password,
+        activo: Number(estado.value),
+      },
+    });
+    const userRes = await profesorServices.putUser({});
+
+    if (res.status == 200 && userRes.status == 200) {
       let toast = await toastController.create({
         message: "Profesor creado con exito",
         duration: 2000,
@@ -289,6 +348,9 @@ const crearProfesor = async () => {
     console.log(error);
   }
 };
+onMounted(() => {
+  getProfesor();
+});
 </script>
 
 <style scoped>

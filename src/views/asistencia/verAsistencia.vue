@@ -117,7 +117,15 @@
               </IonItem>
             </ion-radio-group>
           </div>
+
           <div class="my-10 flex flex-col gap-5 justify-center mx-5">
+            <ion-button
+              color="primary"
+              class="h-[60px] font-bold"
+              @click="guardarAsistencia()"
+              :disabled="!v$.fecha.$model"
+              >Editar</ion-button
+            >
             <ion-button
               fill="outline"
               color="dark"
@@ -184,15 +192,6 @@ const rules = {
 };
 const v$ = useVuelidate(rules, asistencia);
 
-const getEstudiantesGrado = async () => {
-  try {
-    const res = await gradosServices.getEstudiantesPorGrado();
-    data.value = res?.data?.filter((alumno) => alumno.id_grado == 2)[0];
-    alumnos.value = data?.value.estudiantes;
-  } catch (error) {
-    console.log(error);
-  }
-};
 const objetoAsistenciaFinal = computed(() => {
   return alumnos.value.map((alumno) => ({
     id: alumno.id_asistencia,
@@ -214,8 +213,6 @@ const generarHojaAsistencia = async () => {
 };
 const guardarAsistencia = async () => {
   const datosAEnviar = objetoAsistenciaFinal.value;
-
-  console.log("Objeto de Asistencia listo para enviar:", datosAEnviar);
 
   try {
     await asistenciaServices.cargarAsistencias(datosAEnviar);

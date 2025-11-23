@@ -12,38 +12,21 @@
     <ion-content :fullscreen="true">
       <div>
         <h1 class="text-center !font-bold !my-10 text-gray-500">
-          Crear nueva sección
+          Crear nueva especialidad
         </h1>
         <div class="grid grid-cols-1 gap-6 px-4">
           <div>
             <ion-item>
               <ion-input
-                v-model="v$.nombre_seccion.$model"
-                placeholder="Sección"
+                v-model="v$.nombre_especialidad.$model"
+                placeholder="Especialidad"
                 type="text"
-                label="Sección"
+                label="Especialidad"
               ></ion-input>
             </ion-item>
-
-            <ion-item>
-              <ion-select
-                v-model="v$.grado_id.$model"
-                placeholder="Grado"
-                type="text"
-                label="Grado"
-              >
-                <ion-select-option
-                  v-for="value in grados"
-                  :key="value.id_grado"
-                  :value="value.id_grado"
-                  >{{ value.nombre_grado }}</ion-select-option
-                >
-              </ion-select>
-            </ion-item>
             <span
-              v-if="v$.grado_id.$error"
-              v-for="value in v$.grado_id.$errors"
-              :key="value.grado"
+              v-if="v$.nombre_especialidad.$error"
+              v-for="value in v$.nombre_especialidad.$errors"
               class="text-[12px] text-red-500 ml-5"
             >
               {{ value.$message }}
@@ -53,14 +36,14 @@
             <ion-button
               color="primary"
               class="h-[60px] font-bold"
-              @click="editarSeccion()"
+              @click="editarEspecialidad()"
               >Crear</ion-button
             >
             <ion-button
               fill="outline"
               color="dark"
               class="h-[60px] font-bold"
-              @click="$router.push('/Secciones')"
+              @click="$router.push('/especialidades')"
               >Cancelar</ion-button
             >
           </div>
@@ -86,74 +69,61 @@ import {
   IonRadioGroup,
   IonLabel,
   useIonRouter,
-  IonSelect,
-  IonSelectOption,
+  toastController,
 } from "@ionic/vue";
 import { onMounted, ref } from "vue";
+import profesorServices from "@/services/profesor.services";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength, helpers } from "@vuelidate/validators";
-import SeccionServices from "@/services/seccion.services.js";
-import gradoServices from "@/services/grado.services.js";
+import especialidadServices from "@/services/especialidad.services.js";
 import { useRouter } from "vue-router";
 const router = useIonRouter();
 const route = useRouter();
-const seccion = ref({
-  nombre_seccion: "",
-  grado_id: "",
+const especialidad = ref({
+  nombre_especialidad: "",
 });
 const rules = {
-  nombre_seccion: {
+  nombre_especialidad: {
     required: helpers.withMessage("El nombre es requerido", required),
   },
-  grado_id: {
-    required: helpers.withMessage("El grado es requerido", required),
-  },
 };
-const v$ = useVuelidate(rules, seccion);
+const v$ = useVuelidate(rules, especialidad);
 
-const editarSeccion = async () => {
+const getEspecialidad = async () => {
+  try {
+    const res = await especialidadServices.getEspecialidadById({
+      valor: route.currentRoute.value.params.id,
+      table: "especialidad",
+      column: "id_especialidad",
+    });
+    especialidad.value = res.data[0][0];
+  } catch (error) {
+    console.log(error);
+  }
+};
+const editarEspecialidad = async () => {
   try {
     if (v$.value.$invalid) {
       return;
     }
-    const res = await SeccionServices.putSecciones({
-      id_seccion: route.currentRoute.value.params.id,
-      nombre_seccion: seccion.value.nombre_seccion,
-      grado_id: seccion.value.grado_id,
+    const res = await especialidadServices.putEspecialidades({
+      id_especialidad: route.currentRoute.value.params.id,
+      nombre_especialidad: especialidad.value.nombre_especialidad,
     });
-    console.log(res);
-
+    let toast = await toastController.create({
+      message: "Especialidad editada con exito",
+      duration: 2000,
+      color: "success",
+    });
+    toast.present();
     router.back();
   } catch (error) {
     console.log(error);
   }
 };
 
-const getSecciones = async () => {
-  try {
-    const res = await SeccionServices.getSeccionById({
-      table: "secciones",
-      column: "id_seccion",
-      valor: route.currentRoute.value.params.id,
-    });
-    seccion.value = res.data[0][0];
-  } catch (error) {
-    console.log(error);
-  }
-};
-const grados = ref([]);
-const getGrados = async () => {
-  try {
-    const res = await gradoServices.getGrados();
-    grados.value = res.data;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 onMounted(() => {
-  getSecciones();
-  getGrados();
+  getEspecialidad();
 });
 </script>
 

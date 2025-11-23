@@ -55,7 +55,11 @@
                       />
                     </svg>
                   </ion-button>
-                  <ion-button color="danger" fill="outline">
+                  <ion-button
+                    @click="openDeleteModal(item)"
+                    color="danger"
+                    fill="outline"
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       height="24px"
@@ -86,6 +90,27 @@
           </div>
         </div>
       </div>
+      <ion-modal ref="modal" @willDismiss="onWillDismiss">
+        <ion-header>
+          <ion-toolbar>
+            <ion-buttons slot="start">
+              <ion-button @click="cancel()">Cancelar</ion-button>
+            </ion-buttons>
+            <ion-title>Eliminar</ion-title>
+            <ion-buttons slot="end">
+              <ion-button :strong="true" @click="confirm()"
+                >Confirmar</ion-button
+              >
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content class="ion-padding">
+          <div class="!text-center text-[20px] w-full h-full mt-10">
+            ¿Estas seguro de eliminar al profesor?<br />
+            <small>No podrás revertir esta acción</small>
+          </div>
+        </ion-content>
+      </ion-modal>
     </ion-content>
   </ion-page>
 </template>
@@ -103,7 +128,9 @@ import {
   IonToolbar,
   IonButton,
   toastController,
+  IonModal,
 } from "@ionic/vue";
+import { OverlayEventDetail } from "@ionic/core/components";
 import CardDataComponent from "@/components/CardDataComponent.vue";
 import profesoresService from "@/services/profesor.services.js";
 import { computed, onMounted, ref } from "vue";
@@ -178,6 +205,36 @@ const profesoresFiltrados = computed(() => {
       .includes(busqueda.value.toLowerCase())
   );
 });
+//Modal
+const modal = ref();
+const itemSeleccionado = ref(null);
+
+const openDeleteModal = async (item) => {
+  itemSeleccionado.value = item;
+  await modal.value.$el.present(); // Abrir modal
+};
+const cancel = () => modal.value.$el.dismiss(null, "cancel");
+
+const confirm = async () => {
+  const res = await profesoresService.deleteProfesores(
+    itemSeleccionado?.value?.id
+  );
+  if (res) {
+    let toast = await toastController.create({
+      message: "Se ha eliminado exitosamente",
+      duration: 2000,
+      color: "success",
+    });
+    modal.value.$el.dismiss(name, "confirm");
+    return toast.present();
+  }
+};
+
+const onWillDismiss = (event: CustomEvent<OverlayEventDetail>) => {
+  if (event.detail.role === "confirm") {
+    return;
+  }
+};
 onMounted(() => {
   getData();
 });

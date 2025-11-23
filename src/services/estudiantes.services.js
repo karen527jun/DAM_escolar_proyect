@@ -27,6 +27,11 @@ const putMatricula = async (body) => {
   const response = await network.put(`/matricula/update`, body);
   return response;
 };
+
+const deleteEstudiantes = async (id) => {
+  const response = await network.delete(`/estudiantes/delete/${id}`);
+  return response;
+};
 export default {
   getEstudiantes,
   postEstudiantes,
@@ -34,4 +39,5 @@ export default {
   getMatricula,
   putEstudiantes,
   putMatricula,
+  deleteEstudiantes,
 };

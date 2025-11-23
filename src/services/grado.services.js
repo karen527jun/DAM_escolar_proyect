@@ -13,15 +13,15 @@ const getGrados = async () => {
 const getEstudiantesPorGrado = async () => {
   const response = await network.get(`/grados/estudiantes`);
   return response;
-}
+};
 
-const getGradoById = async (id) => {
-  const response = await network.get(`/grados/${id}`);
+const getGradoById = async (body) => {
+  const response = await network.post(`/helper/getby`, body);
   return response;
 };
 
-const updateGrado = async (id, body) => {
-  const response = await network.put(`/grados/update/${id}`, body);
+const updateGrado = async (body) => {
+  const response = await network.put(`/grados/update`, body);
   return response;
 };
 
@@ -36,5 +36,6 @@ export default {
   getGradoById,
   updateGrado,
   deleteGrado,
-  getEstudiantesPorGrado
+  getEstudiantesPorGrado,
+  deleteGrado,
 };

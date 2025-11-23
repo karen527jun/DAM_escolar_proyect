@@ -27,7 +27,8 @@
               <template v-slot:acciones="{ item }">
                 <div class="flex gap-2">
                   <ion-button
-                    color="primary"
+                    fill="outline"
+                    color="tertiary"
                     @click="
                       $router.push(
                         `/ver-asistencia/${item.id_grado}/${item.seccion}`

@@ -45,6 +45,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("../views/secciones/CrearSecciones.vue"),
   },
   {
+    path: "/editar-seccion/:id",
+    name: "editarSeccion",
+    component: () => import("../views/secciones/editarSecciones.vue"),
+  },
+  {
     path: "/profesores",
     component: () => import("../views/profesores/index.vue"),
   },
@@ -94,6 +99,11 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/especialidades",
     component: () => import("../views/especialidad/index.vue"),
+  },
+  {
+    path: "/editar-especialidad/:id",
+    name: "editarEspecialidad",
+    component: () => import("../views/especialidad/editarEspecialidad.vue"),
   },
   {
     path: "/crear-especialidad",
