@@ -14,6 +14,17 @@
         class="p-10 flex flex-col items-center justify-center min-h-[80vh]"
       >
         <div class="grid xl:grid-cols-4 gap-10">
+          <CardDashboardComponent
+            class="!bg-blue-100 !text-blue-500 xl:col-span-3"
+          >
+            <span class="font-bold text-4xl">
+              Bienvenido al sistema de gestión escolar</span
+            >
+            <span class="text-start"
+              >Puedes seleccionar las opciones en el menú lateral para
+              navegar</span
+            >
+          </CardDashboardComponent>
           <CardDashboardComponent>
             <div class="flex justify-center">
               <svg
@@ -36,16 +47,18 @@
               <span>Administrador</span>
             </div>
           </CardDashboardComponent>
-          <CardDashboardComponent
-            class="!bg-blue-100 !text-blue-500 xl:col-span-3"
-          >
-            <span class="font-bold text-4xl">
-              Bienvenido al sistema de gestión escolar</span
+          <CardDashboardComponent>
+            <span class="font-bold text-[40px]">ESTADÍSTICAS</span>
+            <ion-select
+              v-model="seccionGrafica"
+              placeholder="Seleccione una sección"
             >
-            <span class="text-start"
-              >Puedes seleccionar las opciones en el menú lateral para
-              navegar</span
-            >
+              <ion-select-option v-for="value in secciones" :value="value"
+                >{{ value.nombre_grado }}
+                {{ value.nombre_seccion }}</ion-select-option
+              >
+            </ion-select>
+            <Pie v-if="data" :options="optionsPie" :data="data"></Pie>
           </CardDashboardComponent>
         </div>
       </div>
@@ -55,6 +68,19 @@
 
 <script setup lang="ts">
 import CardDashboardComponent from "@/components/CardDashboardComponent.vue";
+import authServices from "@/services/auth.services";
+import seccionServices from "@/services/seccion.services";
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  ArcElement,
+} from "chart.js";
+import { Pie } from "vue-chartjs";
 import {
   IonInput,
   IonButtons,
@@ -64,7 +90,79 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  onIonViewWillEnter,
+  IonSelect,
+  IonSelectOption,
 } from "@ionic/vue";
+import { Ref, ref, watch } from "vue";
+const optionsPie = ref({
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "top",
+    },
+  },
+});
+
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  ArcElement
+);
+const info: Ref = ref([]);
+const data = ref();
+const dataPie = async () => {
+  try {
+    info.value = [];
+    data.value = null;
+    const res = await authServices.getReportes({
+      id: seccionGrafica.value.id_grado,
+      seccion: seccionGrafica.value.id_seccion,
+    });
+
+    info.value.push(res.data[0].ausentes);
+    info.value.push(res.data[0].presentes);
+    info.value.push(res.data[0].justificados);
+
+    data.value = {
+      labels: ["Ausente", "Presentes", "Justificados"],
+      datasets: [
+        {
+          backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
+          data: info.value,
+        },
+      ],
+    };
+    console.log(data.value);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const seccionGrafica = ref();
+const secciones = ref();
+const getSecciones = async () => {
+  try {
+    const res = await seccionServices.getSecciones();
+    secciones.value = res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+watch(
+  () => seccionGrafica.value,
+  () => {
+    dataPie();
+  }
+);
+onIonViewWillEnter(() => {
+  getSecciones();
+});
 </script>
 
 <style scoped>

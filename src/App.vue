@@ -83,12 +83,18 @@ import {
   clipboardOutline,
   personCircleOutline,
   briefcaseOutline,
+  home,
 } from "ionicons/icons";
 
 const router = useIonRouter();
 const selectedIndex = ref(0);
 
 const appPages = [
+  {
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: home,
+  },
   {
     title: "Usuarios",
     url: "/usuarios",

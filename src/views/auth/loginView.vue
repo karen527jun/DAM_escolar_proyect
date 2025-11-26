@@ -109,9 +109,11 @@ const v$ = useVuelidate(rules, user);
 const login = async () => {
   try {
     const res = await authServices.login(user.value);
+    // const profesor = await authServices.comprobarToken({
+    //   token: res?.data?.token,
+    // });
     if (res.data.estado) {
       localStorage.setItem("token", res?.data?.token);
-      // localStorage.setItem("rol", res?.data?.rol);
       router.push("/dashboard");
     }
   } catch (error) {
