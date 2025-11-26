@@ -16,8 +16,14 @@ const cargarAsistencias = async (body) => {
   return response;
 };
 
+const getAsistenciaPorFecha = async (body) => {
+  const response = await network.post("/helper/fechas", body);
+  return response;
+};
+
 export default {
   generarHoja,
   getHojas,
   cargarAsistencias,
+  getAsistenciaPorFecha,
 };

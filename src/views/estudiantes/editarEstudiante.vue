@@ -12,7 +12,7 @@
     <ion-content :fullscreen="true">
       <div>
         <h1 class="text-center !font-bold !mb-10 text-gray-500">
-          Crear nuevo estudiante
+          Editar estudiante
         </h1>
         <div class="grid grid-cols-1 gap-6 px-4">
           <div>
@@ -206,7 +206,17 @@
               {{ value.$message }}
             </span>
           </div>
-
+          <ion-item>
+            <ion-select v-model="matricula" placeholder="Seccion">
+              <ion-select-option
+                v-for="value in secciones"
+                :key="value.id_seccion"
+                :value="value.id_seccion"
+                >{{ value.nombre_grado }}
+                {{ value.nombre_seccion }}</ion-select-option
+              >
+            </ion-select>
+          </ion-item>
           <div class="my-10 flex flex-col gap-5 justify-center mx-5">
             <ion-button
               color="primary"
@@ -245,13 +255,17 @@ import {
   IonLabel,
   toastController,
   useIonRouter,
+  IonSelect,
+  IonSelectOption,
   IonToggle,
+  onIonViewWillEnter,
 } from "@ionic/vue";
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import estudiantesService from "@/services/estudiantes.services";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength, helpers } from "@vuelidate/validators";
 import { useRouter } from "vue-router";
+import seccionServices from "@/services/seccion.services";
 
 const router = useRouter();
 
@@ -394,9 +408,20 @@ const editarEstudiante = async () => {
   }
 };
 
-onMounted(() => {
+const secciones = ref([]);
+
+const getSecciones = async () => {
+  try {
+    const res = await seccionServices.getSecciones();
+    secciones.value = res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+onIonViewWillEnter(() => {
   getEstudiante();
   getMatricula();
+  getSecciones();
 });
 </script>
 

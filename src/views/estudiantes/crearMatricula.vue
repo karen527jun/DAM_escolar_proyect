@@ -67,9 +67,10 @@ import {
   IonRadio,
   IonRadioGroup,
   toastController,
+  onIonViewWillEnter,
 } from "@ionic/vue";
 import seccionesServices from "@/services/seccion.services.js";
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 // import estudiantes from "@/interfaces/.ts";
 import router from "@/router";
 import estudiantesServices from "@/services/estudiantes.services";
@@ -106,7 +107,7 @@ const crearMatricula = async () => {
     console.log(error);
   }
 };
-onMounted(() => {
+onIonViewWillEnter(() => {
   getData();
 });
 </script>

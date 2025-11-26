@@ -201,8 +201,9 @@ import {
   toastController,
   useIonRouter,
   IonToggle,
+  onIonViewWillEnter,
 } from "@ionic/vue";
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import profesorServices from "@/services/profesor.services";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength, helpers } from "@vuelidate/validators";
@@ -241,9 +242,7 @@ const rules = {
   username: {
     required: helpers.withMessage("El username es requerido", required),
   },
-  password: {
-    required: helpers.withMessage("La contraseña es requerida", required),
-  },
+  password: {},
 };
 
 const v$ = useVuelidate(rules, profesor);
@@ -261,6 +260,9 @@ const getProfesor = async () => {
     });
 
     profesor.value = res.data[0][0];
+    estado.value = Boolean(res.data[0][0].estado);
+    console.log(Boolean(res.data[0][0].estado));
+
     getUsuario(res.data[0][0].id_usuario);
   } catch (error) {
     console.log(error);
@@ -270,15 +272,14 @@ const getProfesor = async () => {
 const getUsuario = async (id) => {
   try {
     const res = await profesorServices.getProfesorById({
-      valor: route.currentRoute.value.params.id,
+      valor: id,
       table: "usuarios",
       column: "id",
     });
 
     profesor.value.username = res.data[0][0].username;
-    profesor.value.password = res.data[0][0].password;
-    secondPassword.value = res.data[0][0].password;
-    estado.value = Boolean(res.data[0][0].activo.data[0]);
+    profesor.value.password = null;
+    secondPassword.value = null;
   } catch (error) {
     console.log(error);
   }
@@ -309,6 +310,7 @@ const crearProfesor = async () => {
       telefono: profesor.value.telefono,
       direccion: profesor.value.direccion,
       genero: profesor.value.genero,
+      estado: Number(estado.value),
       usuario: {
         id: profesor.value.id_usuario,
         username: profesor.value.username,
@@ -316,9 +318,8 @@ const crearProfesor = async () => {
         activo: Number(estado.value),
       },
     });
-    const userRes = await profesorServices.putUser({});
 
-    if (res.status == 200 && userRes.status == 200) {
+    if (res.status == 200) {
       let toast = await toastController.create({
         message: "Profesor creado con exito",
         duration: 2000,
@@ -348,7 +349,7 @@ const crearProfesor = async () => {
     console.log(error);
   }
 };
-onMounted(() => {
+onIonViewWillEnter(() => {
   getProfesor();
 });
 </script>

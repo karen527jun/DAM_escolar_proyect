@@ -88,8 +88,9 @@ import {
   useIonRouter,
   IonSelect,
   IonSelectOption,
+  onIonViewWillEnter,
 } from "@ionic/vue";
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength, helpers } from "@vuelidate/validators";
 import SeccionServices from "@/services/seccion.services.js";
@@ -151,7 +152,7 @@ const getGrados = async () => {
   }
 };
 
-onMounted(() => {
+onIonViewWillEnter(() => {
   getSecciones();
   getGrados();
 });

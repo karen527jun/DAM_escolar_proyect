@@ -105,12 +105,13 @@ import {
   IonButton,
   toastController,
   IonModal,
+  onIonViewWillEnter,
 } from "@ionic/vue";
 import { OverlayEventDetail } from "@ionic/core/components";
 
 import CardDataComponent from "@/components/CardDataComponent.vue";
 import Seccion from "@/interfaces/secciones";
-import { computed, onMounted, Ref, ref } from "vue";
+import { computed, Ref, ref } from "vue";
 import seccionServices from "@/services/seccion.services";
 import LoaderComponent from "@/components/LoaderComponent.vue";
 
@@ -190,7 +191,7 @@ const onWillDismiss = (event: CustomEvent<OverlayEventDetail>) => {
     return;
   }
 };
-onMounted(() => {
+onIonViewWillEnter(() => {
   getSecciones();
 });
 </script>

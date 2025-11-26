@@ -129,11 +129,12 @@ import {
   IonButton,
   toastController,
   IonModal,
+  onIonViewWillEnter,
 } from "@ionic/vue";
 import { OverlayEventDetail } from "@ionic/core/components";
 import CardDataComponent from "@/components/CardDataComponent.vue";
 import profesoresService from "@/services/profesor.services.js";
-import { computed, onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 import profesores from "@/interfaces/profesores.ts";
 import router from "@/router";
 import LoaderComponent from "@/components/LoaderComponent.vue";
@@ -235,7 +236,7 @@ const onWillDismiss = (event: CustomEvent<OverlayEventDetail>) => {
     return;
   }
 };
-onMounted(() => {
+onIonViewWillEnter(() => {
   getData();
 });
 </script>

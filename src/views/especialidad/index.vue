@@ -120,11 +120,12 @@ import {
   IonButton,
   toastController,
   IonModal,
+  onIonViewWillEnter,
 } from "@ionic/vue";
 import { OverlayEventDetail } from "@ionic/core/components";
 import CardDataComponent from "@/components/CardDataComponent.vue";
 import especialidadesServices from "@/services/especialidad.services.js";
-import { computed, onMounted, Ref, ref } from "vue";
+import { computed, Ref, ref } from "vue";
 import Especialidad from "@/interfaces/especialidades";
 import LoaderComponent from "@/components/LoaderComponent.vue";
 const busqueda = ref("");
@@ -197,7 +198,8 @@ const onWillDismiss = (event: CustomEvent<OverlayEventDetail>) => {
     return;
   }
 };
-onMounted(() => {
+
+onIonViewWillEnter(() => {
   getEspecialidad();
 });
 </script>

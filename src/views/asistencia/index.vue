@@ -59,8 +59,9 @@ import {
   IonTitle,
   IonToolbar,
   toastController,
+  onIonViewWillEnter,
 } from "@ionic/vue";
-import { onMounted, Ref, ref } from "vue";
+import { Ref, ref } from "vue";
 import LoaderComponent from "@/components/LoaderComponent.vue";
 
 const headers = [
@@ -126,7 +127,7 @@ const getSecciones = async () => {
     loader.value = false;
   }
 };
-onMounted(() => {
+onIonViewWillEnter(() => {
   getSecciones();
 });
 </script>

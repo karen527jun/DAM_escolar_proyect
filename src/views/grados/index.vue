@@ -109,9 +109,10 @@ import {
   IonButton,
   IonModal,
   toastController,
+  onIonViewWillEnter,
 } from "@ionic/vue";
 import Grados from "@/interfaces/Grados";
-import { ref, onMounted, computed, Ref } from "vue";
+import { ref, computed, Ref } from "vue";
 import CardDataComponent from "@/components/CardDataComponent.vue";
 import gradosService from "@/services/grado.services.js";
 import LoaderComponent from "@/components/LoaderComponent.vue";
@@ -183,7 +184,7 @@ const onWillDismiss = (event: CustomEvent<OverlayEventDetail>) => {
     return;
   }
 };
-onMounted(() => {
+onIonViewWillEnter(() => {
   cargarGrados();
 });
 </script>

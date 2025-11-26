@@ -62,6 +62,7 @@ import {
   IonToolbar,
   IonButton,
   toastController,
+  onIonViewWillEnter,
 } from "@ionic/vue";
 import CardDataComponent from "@/components/CardDataComponent.vue";
 import usuarioServices from "@/services/usuarios.services.js";

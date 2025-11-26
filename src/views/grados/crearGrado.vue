@@ -142,8 +142,9 @@ import {
   useIonRouter,
   IonSelect,
   IonSelectOption,
+  onIonViewWillEnter,
 } from "@ionic/vue";
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import gradoServices from "@/services/grado.services";
 import { useVuelidate } from "@vuelidate/core";
 import { required, minValue, helpers } from "@vuelidate/validators";
@@ -236,7 +237,7 @@ const getEspecialidades = async () => {
   }
 };
 
-onMounted(() => {
+onIonViewWillEnter(() => {
   getProfesores();
   getEspecialidades();
 });

@@ -70,8 +70,9 @@ import {
   IonLabel,
   useIonRouter,
   toastController,
+  onIonViewWillEnter,
 } from "@ionic/vue";
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import profesorServices from "@/services/profesor.services";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength, helpers } from "@vuelidate/validators";
@@ -122,7 +123,7 @@ const editarEspecialidad = async () => {
   }
 };
 
-onMounted(() => {
+onIonViewWillEnter(() => {
   getEspecialidad();
 });
 </script>

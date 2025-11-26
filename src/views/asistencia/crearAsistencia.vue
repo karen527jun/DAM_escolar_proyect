@@ -161,8 +161,9 @@ import {
   useIonRouter,
   IonSelect,
   IonSelectOption,
+  onIonViewWillEnter,
 } from "@ionic/vue";
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, watch } from "vue";
 import profesorServices from "@/services/profesor.services";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength, helpers } from "@vuelidate/validators";
@@ -280,7 +281,7 @@ watch(
     console.log(asistencia.value);
   }
 );
-onMounted(() => {
+onIonViewWillEnter(() => {
   // getEstudiantesGrado();
   getGrados();
   getSecciones();

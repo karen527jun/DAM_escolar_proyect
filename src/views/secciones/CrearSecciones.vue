@@ -34,8 +34,8 @@
               >
                 <ion-select-option
                   v-for="value in grados"
-                  :key="value.id_grado"
-                  :value="value.id_grado"
+                  :key="value"
+                  :value="value?.id_grado"
                   >{{ value.nombre_grado }}</ion-select-option
                 >
               </ion-select>
@@ -87,9 +87,10 @@ import {
   IonLabel,
   useIonRouter,
   IonSelect,
+  onIonViewWillEnter,
   IonSelectOption,
 } from "@ionic/vue";
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength, helpers } from "@vuelidate/validators";
 import SeccionServices from "@/services/seccion.services.js";
@@ -126,13 +127,14 @@ const grados = ref([]);
 const getGrados = async () => {
   try {
     const res = await gradoServices.getGrados();
-    grados.value = res.data;
+    grados.value = res.data.filter((grado) => grado.seccion == null);
+    console.log(grados.value);
   } catch (error) {
     console.log(error);
   }
 };
 
-onMounted(() => {
+onIonViewWillEnter(() => {
   getGrados();
 });
 </script>

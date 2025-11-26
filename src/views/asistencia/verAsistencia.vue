@@ -21,52 +21,17 @@
           </div>
           <div>
             <ion-item>
-              <ion-input
+              <ion-select
                 v-model="v$.fecha.$model"
                 placeholder="00/00/0000"
                 type="date"
                 label="Fecha"
-              ></ion-input>
-            </ion-item>
-            <!-- <ion-item>
-              <ion-select
-                v-model="v$.grado.$model"
-                placeholder="Seleccione un grado"
-                type="text"
-                label="Grado"
-                disabled
               >
-                <ion-select-option
-                  v-for="value in grados"
-                  :key="value.id_grado"
-                  :value="value.id_grado"
-                  >{{ value.nombre_grado }}</ion-select-option
+                <ion-select-option v-for="value in fechas" :key="value">
+                  {{ value.fecha.slice(0, 10) }}</ion-select-option
                 >
               </ion-select>
             </ion-item>
-            <ion-item>
-              <ion-select
-                v-model="v$.seccion.$model"
-                placeholder="Seleccione una sección"
-                type="text"
-                label="Sección"
-                disabled
-              >
-                <ion-select-option
-                  v-for="value in seccionesFiltradas"
-                  :key="value.id_seccion"
-                  :value="value.id_seccion"
-                  >{{ value.nombre_seccion }}</ion-select-option
-                >
-              </ion-select>
-            </ion-item> -->
-            <!-- <span
-              v-if="v$.seccion.$error"
-              v-for="value in v$.seccion.$errors"
-              class="text-[12px] text-red-500 ml-5"
-            >
-              {{ value.$message }}
-            </span> -->
           </div>
           <div class="flex justify-center">
             <ion-button
@@ -158,8 +123,9 @@ import {
   useIonRouter,
   IonSelect,
   IonSelectOption,
+  onIonViewWillEnter,
 } from "@ionic/vue";
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, watch } from "vue";
 import profesorServices from "@/services/profesor.services";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength, helpers } from "@vuelidate/validators";
@@ -238,6 +204,7 @@ const getGrados = async () => {
     asistencia.value.grado = grados.value.filter(
       (grado) => grado.id_grado == router.currentRoute.value.params.id
     )[0];
+    verAsistencias();
     console.log(asistencia.value);
   } catch (error) {
     console.log(error);
@@ -252,14 +219,15 @@ const getSecciones = async () => {
     secciones.value = res.data;
     asistencia.value.seccion = secciones.value.filter(
       (seccion) =>
-        seccion.nombre_seccion == router.currentRoute.value.params.seccion
+        seccion.nombre_seccion == router.currentRoute.value.params.seccion &&
+        seccion.id_grado == router.currentRoute.value.params.id
     )[0];
+    verAsistencias();
   } catch (error) {
     console.log(error);
   }
 };
 const seccionesFiltradas = ref([]);
-
 watch(
   () => asistencia.value.grado,
   (grado) => {
@@ -267,11 +235,23 @@ watch(
       (seccion) => seccion.id_grado === grado
     );
     seccionesFiltradas.value = resultadoFiltro;
-
-    console.log(asistencia.value);
   }
 );
-onMounted(() => {
+
+const fechas = ref([]);
+const verAsistencias = async () => {
+  try {
+    const res = await asistenciaServices.getAsistenciaPorFecha({
+      grado: asistencia?.value?.grado?.id_grado,
+      seccion: asistencia?.value?.seccion?.id_seccion,
+    });
+    fechas.value = res.data;
+    console.log(asistencia.value, "asistencia");
+  } catch (error) {
+    console.log(error);
+  }
+};
+onIonViewWillEnter(() => {
   // getEstudiantesGrado();
   getGrados();
   getSecciones();

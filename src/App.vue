@@ -72,8 +72,9 @@ import {
   IonRouterOutlet,
   IonSplitPane,
   useIonRouter,
+  onIonViewWillEnter,
 } from "@ionic/vue";
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import {
   peopleOutline,
   schoolOutline,
@@ -137,7 +138,7 @@ const loggout = () => {
   loggedIn.value = false;
 };
 
-onMounted(() => {
+onIonViewWillEnter(() => {
   setTimeout(() => {
     if (localStorage.getItem("token")) {
       loggedIn.value = true;
