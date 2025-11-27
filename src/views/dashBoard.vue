@@ -42,9 +42,9 @@
             <div class="border border-t-blue-500 w-full"></div>
             <div class="grid grid-cols-2">
               <strong>Usuario:</strong>
-              <span>Admin</span>
+              <span>{{ usuario?.username }}</span>
               <strong>Rol:</strong>
-              <span>Administrador</span>
+              <span>{{ usuario?.rol }}</span>
             </div>
           </CardDashboardComponent>
           <CardDashboardComponent>
@@ -53,9 +53,8 @@
               v-model="seccionGrafica"
               placeholder="Seleccione una sección"
             >
-              <ion-select-option v-for="value in secciones" :value="value"
-                >{{ value.nombre_grado }}
-                {{ value.nombre_seccion }}</ion-select-option
+              <ion-select-option v-for="value in grados" :value="value"
+                >{{ value.nombre_grado }} {{ value.seccion }}</ion-select-option
               >
             </ion-select>
             <Pie v-if="data" :options="optionsPie" :data="data"></Pie>
@@ -69,7 +68,7 @@
 <script setup lang="ts">
 import CardDashboardComponent from "@/components/CardDashboardComponent.vue";
 import authServices from "@/services/auth.services";
-import seccionServices from "@/services/seccion.services";
+import gradoServices from "@/services/grado.services";
 import {
   Chart as ChartJS,
   Title,
@@ -113,6 +112,13 @@ ChartJS.register(
   LinearScale,
   ArcElement
 );
+const usuario = ref({
+  username: localStorage.getItem("nombre_completo"),
+  rol:
+    localStorage.getItem("username") == "super_admin"
+      ? "Administrador"
+      : "Profesor",
+});
 const info: Ref = ref([]);
 const data = ref();
 const dataPie = async () => {
@@ -144,11 +150,19 @@ const dataPie = async () => {
 };
 
 const seccionGrafica = ref();
-const secciones = ref();
+const grados = ref();
 const getSecciones = async () => {
   try {
-    const res = await seccionServices.getSecciones();
-    secciones.value = res.data;
+    const res = await gradoServices.getGrados();
+    if (usuario.value.rol == "Profesor") {
+      grados.value = res.data.filter(
+        (seccion) =>
+          seccion.id_profesor == localStorage.getItem("id_profesor") &&
+          seccion.seccion != null
+      );
+    } else {
+      grados.value = res.data;
+    }
   } catch (error) {
     console.log(error);
   }

@@ -252,7 +252,19 @@ const grados = ref([]);
 const getGrados = async () => {
   try {
     const res = await gradosServices.getGrados();
-    grados.value = res.data;
+    const idProfesor = localStorage.getItem("id_profesor");
+    const idsGradosVistos = new Set();
+    grados.value = res.data.filter((grado) => {
+      if (grado.id_profesor != idProfesor) {
+        return false;
+      }
+      const idGradoActual = grado.id_grado;
+      if (idsGradosVistos.has(idGradoActual)) {
+        return false;
+      }
+      idsGradosVistos.add(idGradoActual);
+      return true;
+    });
   } catch (error) {
     console.log(error);
   }

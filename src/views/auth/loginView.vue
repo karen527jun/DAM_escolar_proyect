@@ -109,11 +109,18 @@ const v$ = useVuelidate(rules, user);
 const login = async () => {
   try {
     const res = await authServices.login(user.value);
-    // const profesor = await authServices.comprobarToken({
-    //   token: res?.data?.token,
-    // });
+    const profesor = await authServices.comprobarToken({
+      token: res?.data?.token,
+    });
     if (res.data.estado) {
       localStorage.setItem("token", res?.data?.token);
+      localStorage.setItem("id_profesor", profesor?.data?.id_profesor);
+      localStorage.setItem("id_usuario", profesor?.data?.id_usuario);
+      localStorage.setItem("username", profesor?.data?.username);
+      localStorage.setItem("nombre_completo", profesor?.data?.nombre_completo);
+      localStorage.setItem("correo", profesor?.data?.correo);
+      console.log(profesor);
+
       router.push("/dashboard");
     }
   } catch (error) {
