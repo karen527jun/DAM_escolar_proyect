@@ -14,6 +14,14 @@
         <h1 class="text-center !font-bold !mb-10 text-gray-500">
           Editar estudiante
         </h1>
+
+        <div
+          v-if="!tieneMatricula"
+          class="bg-yellow-100 border-2 border-yellow-500 m-5 p-2 text-yellow-800 rounded-xl"
+        >
+          <strong> Asignación de Sección Obligatoria:</strong> Inscribe al
+          estudiante en una sección.
+        </div>
         <div class="grid grid-cols-1 gap-6 px-4">
           <div>
             <ion-item>
@@ -207,7 +215,7 @@
             </span>
           </div>
           <ion-item>
-            <ion-select v-model="matricula" placeholder="Seccion">
+            <ion-select v-model="seccionSeleccionada" placeholder="Seccion">
               <ion-select-option
                 v-for="value in secciones"
                 :key="value.id_seccion"
@@ -326,11 +334,11 @@ const rules = {
 };
 
 const v$ = useVuelidate(rules, estudiante);
-
+const seccionSeleccionada = ref();
 const handleChange = (event: any) => {
   estudiante.value.genero_del_alumno = event.detail.value;
 };
-
+const tieneMatricula = ref(false);
 const getEstudiante = async () => {
   try {
     const res = await estudiantesService.getEstudiantes();
@@ -345,9 +353,7 @@ const getEstudiante = async () => {
   }
 };
 
-const matricula = ref({
-  id_seccion: "",
-});
+const matricula = ref({});
 const getMatricula = async () => {
   try {
     const res = await estudiantesService.getMatricula({
@@ -355,7 +361,10 @@ const getMatricula = async () => {
       column: "NIE",
       valor: router.currentRoute.value.params.id,
     });
-    matricula.value = res.data;
+    if (res.data[0].length > 0) {
+      tieneMatricula.value = true;
+      seccionSeleccionada.value = res.data[0][0].id_seccion;
+    }
   } catch (error) {
     console.log(error);
   }
@@ -373,6 +382,18 @@ const editarEstudiante = async () => {
     }
 
     const res = await estudiantesService.putEstudiantes(estudiante.value);
+    let resMatricula = {};
+    if (!tieneMatricula.value) {
+      resMatricula = await estudiantesService.postMatricula({
+        nie: estudiante.value.NIE,
+        seccion: seccionSeleccionada.value,
+      });
+    } else {
+      resMatricula = await estudiantesService.putMatricula({
+        nie: estudiante.value.NIE,
+        seccion: seccionSeleccionada.value,
+      });
+    }
     if (res.status == 200) {
       let toast = await toastController.create({
         message: "Estudiante editado con exito",
@@ -393,6 +414,7 @@ const editarEstudiante = async () => {
         dui: "",
         estado: 1,
       };
+
       //   router.push("/crear-matricula/" + res.data.data.nie);
       router.push("/estudiantes");
     } else {

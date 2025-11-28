@@ -127,8 +127,15 @@ const grados = ref([]);
 const getGrados = async () => {
   try {
     const res = await gradoServices.getGrados();
-    grados.value = res.data.filter((grado) => grado.seccion == null);
-    console.log(grados.value);
+    const idsGradosVistos = new Set();
+    grados.value = res.data.filter((grado) => {
+      const idGradoActual = grado.id_grado;
+      if (idsGradosVistos.has(idGradoActual)) {
+        return false;
+      }
+      idsGradosVistos.add(idGradoActual);
+      return true;
+    });
   } catch (error) {
     console.log(error);
   }

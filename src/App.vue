@@ -10,13 +10,14 @@
         <ion-content>
           <div class="menu-header"></div>
           <div class="p-4">
-            <ion-note>hi@ionicframework.com</ion-note>
+            <ion-note>{{ correo }}</ion-note>
             <ion-menu-toggle
               :auto-hide="false"
               v-for="(p, i) in appPages"
               :key="i"
             >
               <ion-item
+                v-if="p.show"
                 @click="navegarRuta(i)"
                 router-direction="root"
                 :router-link="p.url"
@@ -86,49 +87,58 @@ import {
   home,
 } from "ionicons/icons";
 
+const usuario = localStorage.getItem("username");
 const router = useIonRouter();
 const selectedIndex = ref(0);
-
+const correo = ref(localStorage.getItem("correo"));
 const appPages = [
   {
     title: "Dashboard",
     url: "/dashboard",
     icon: home,
+    show: true,
   },
   {
     title: "Usuarios",
     url: "/usuarios",
     icon: peopleOutline,
+    show: usuario == "super_admin" ? true : false,
   },
   {
     title: "Grados",
     url: "/grados",
     icon: schoolOutline,
+    show: usuario == "super_admin" ? true : false,
   },
   {
     title: "Secciones",
     url: "/secciones",
     icon: layersOutline,
+    show: usuario == "super_admin" ? true : false,
   },
   {
     title: "Profesores",
     url: "/profesores",
     icon: personOutline,
+    show: usuario == "super_admin" ? true : false,
   },
   {
     title: "Asistencia",
     url: "/asistencia",
     icon: clipboardOutline,
+    show: true,
   },
   {
     title: "Estudiantes",
     url: "/estudiantes",
     icon: personCircleOutline,
+    show: true,
   },
   {
     title: "Especialidades",
     url: "/especialidades",
     icon: briefcaseOutline,
+    show: usuario == "super_admin" ? true : false,
   },
 ];
 

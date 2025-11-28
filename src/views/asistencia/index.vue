@@ -114,7 +114,11 @@ const getSecciones = async () => {
   try {
     loader.value = true;
     const res = await gradoServices.getGrados();
-    grados.value = res.data.filter((grado) => grado.seccion !== null);
+    grados.value = res.data.filter(
+      (grado) =>
+        grado.seccion !== null &&
+        grado.id_profesor == localStorage.getItem("id_profesor")
+    );
   } catch (error) {
     console.log(error);
     let toast = await toastController.create({
