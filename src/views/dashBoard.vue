@@ -1,7 +1,7 @@
 <template>
   <ion-page>
     <ion-header :translucent="true">
-      <ion-toolbar class="h-[80px] flex items-center px-10">
+      <ion-toolbar class="h-[80px] flex items-center">
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
@@ -130,7 +130,7 @@ const dataPie = async () => {
       seccion: seccionGrafica.value.id_seccion,
     });
 
-    info.value.push(res.data[0].ausentes);
+    info.value.push(res.data[0].faltas);
     info.value.push(res.data[0].presentes);
     info.value.push(res.data[0].justificados);
 

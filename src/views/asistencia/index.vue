@@ -2,7 +2,7 @@
   <ion-page>
     <LoaderComponent v-if="loader"></LoaderComponent>
     <ion-header :translucent="true">
-      <ion-toolbar class="h-[80px] flex items-center px-10">
+      <ion-toolbar class="h-[80px] flex items-center">
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
@@ -114,11 +114,15 @@ const getSecciones = async () => {
   try {
     loader.value = true;
     const res = await gradoServices.getGrados();
-    grados.value = res.data.filter(
-      (grado) =>
-        grado.seccion !== null &&
-        grado.id_profesor == localStorage.getItem("id_profesor")
-    );
+    if (localStorage.getItem("username") !== "super_admin") {
+      grados.value = res.data.filter(
+        (grado) =>
+          grado.seccion !== null &&
+          grado.id_profesor == localStorage.getItem("id_profesor")
+      );
+    } else {
+      grados.value = res.data.filter((grado) => grado.seccion !== null);
+    }
   } catch (error) {
     console.log(error);
     let toast = await toastController.create({
