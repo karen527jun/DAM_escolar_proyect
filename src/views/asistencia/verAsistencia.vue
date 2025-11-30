@@ -253,8 +253,15 @@ const verAsistencias = async () => {
 };
 onIonViewWillEnter(() => {
   // getEstudiantesGrado();
+
   getGrados();
   getSecciones();
+  asistencia.value = {
+    grado: "",
+    seccion: "",
+    fecha: "",
+  };
+  alumnos.value = [];
 });
 </script>
 

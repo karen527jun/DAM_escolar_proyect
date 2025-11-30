@@ -236,6 +236,11 @@ const guardarAsistencia = async () => {
     await asistenciaServices.cargarAsistencias(datosAEnviar);
     toastMessage.value = "Asistencia guardada con éxito.";
     isToastOpen.value = true;
+    asistencia.value = {
+      grado: "",
+      seccion: "",
+      fecha: "",
+    };
     router.push("/asistencia");
   } catch (error) {
     toastMessage.value = "Error al guardar la asistencia.";

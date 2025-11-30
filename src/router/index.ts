@@ -75,11 +75,6 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("../views/asistencia/verAsistencia.vue"),
   },
   {
-    path: "/editar-asistencia/:id",
-    name: "editarAsistencia",
-    component: () => import("../views/asistencia/editarAsistencia.vue"),
-  },
-  {
     path: "/estudiantes",
     component: () => import("../views/estudiantes/index.vue"),
   },

@@ -87,42 +87,7 @@
               {{ value.$message }}
             </span>
           </div>
-          <div>
-            <ion-item>
-              <ion-input
-                v-model="v$.correo.$model"
-                placeholder="Correo"
-                type="text"
-                label="Correo"
-              ></ion-input>
-            </ion-item>
-            <span
-              v-if="v$.correo.$error"
-              v-for="value in v$.correo.$errors"
-              :key="value.$uid"
-              class="text-[12px] text-red-500 ml-5"
-            >
-              {{ value.$message }}
-            </span>
-          </div>
-          <div>
-            <ion-item>
-              <ion-input
-                v-model="v$.telefono_de_emergencia.$model"
-                placeholder="########"
-                type="text"
-                label="Teléfono de emergencia"
-              ></ion-input>
-            </ion-item>
-            <span
-              v-if="v$.telefono_de_emergencia.$error"
-              v-for="value in v$.telefono_de_emergencia.$errors"
-              :key="value.$uid"
-              class="text-[12px] text-red-500 ml-5"
-            >
-              {{ value.$message }}
-            </span>
-          </div>
+
           <div>
             <ion-item>
               <ion-input
@@ -160,6 +125,10 @@
               {{ value.$message }}
             </span>
           </div>
+          <span class="ml-4 font-bold"
+            >Información de la persona responsable</span
+          >
+
           <div>
             <ion-item>
               <ion-input
@@ -181,6 +150,24 @@
           <div>
             <ion-item>
               <ion-input
+                v-model="v$.correo.$model"
+                placeholder="Correo"
+                type="text"
+                label="Correo"
+              ></ion-input>
+            </ion-item>
+            <span
+              v-if="v$.correo.$error"
+              v-for="value in v$.correo.$errors"
+              :key="value.$uid"
+              class="text-[12px] text-red-500 ml-5"
+            >
+              {{ value.$message }}
+            </span>
+          </div>
+          <div>
+            <ion-item>
+              <ion-input
                 v-model="v$.dui.$model"
                 placeholder="0000000-0"
                 type="text"
@@ -190,6 +177,24 @@
             <span
               v-if="v$.dui.$error"
               v-for="value in v$.dui.$errors"
+              :key="value.$uid"
+              class="text-[12px] text-red-500 ml-5"
+            >
+              {{ value.$message }}
+            </span>
+          </div>
+          <div>
+            <ion-item>
+              <ion-input
+                v-model="v$.telefono_de_emergencia.$model"
+                placeholder="########"
+                type="text"
+                label="Teléfono de emergencia"
+              ></ion-input>
+            </ion-item>
+            <span
+              v-if="v$.telefono_de_emergencia.$error"
+              v-for="value in v$.telefono_de_emergencia.$errors"
               :key="value.$uid"
               class="text-[12px] text-red-500 ml-5"
             >

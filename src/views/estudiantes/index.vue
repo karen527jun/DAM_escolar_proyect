@@ -187,7 +187,7 @@ const data: Ref<Estudiante[]> = ref([]);
 const loader = ref(false);
 
 const isProfesor = computed(() => {
-  return localStorage.getItem("isProfesor") == "true";
+  return localStorage.getItem("username") !== "super_admin" ? false : true;
 });
 const editarEstudiante = (estudiante) => {
   router.push({
@@ -244,6 +244,7 @@ const confirm = async () => {
       color: "success",
     });
     modal.value.$el.dismiss(name, "confirm");
+    getData();
     return toast.present();
   }
 };

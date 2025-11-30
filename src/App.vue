@@ -2,7 +2,7 @@
   <ion-app>
     <ion-split-pane content-id="main-content">
       <ion-menu
-        v-if="$route.name !== 'LoginView'"
+        v-if="loggedIn"
         class="md:max-w-[300px]"
         content-id="main-content"
         type="overlay"
@@ -18,7 +18,7 @@
             >
               <ion-item
                 v-if="p.show"
-                @click="navegarRuta(i)"
+                @click="navegarRuta(p)"
                 router-direction="root"
                 :router-link="p.url"
                 lines="none"
@@ -73,9 +73,9 @@ import {
   IonRouterOutlet,
   IonSplitPane,
   useIonRouter,
-  onIonViewWillEnter,
+  // onIonViewWillEnter,
 } from "@ionic/vue";
-import { ref } from "vue";
+import { computed, ref, watch } from "vue";
 import {
   peopleOutline,
   schoolOutline,
@@ -86,12 +86,17 @@ import {
   briefcaseOutline,
   home,
 } from "ionicons/icons";
+import { useRoute } from "vue-router";
 
-const usuario = localStorage.getItem("username");
+const route = useRoute();
+const usuario = ref(localStorage.getItem("username"));
 const router = useIonRouter();
 const selectedIndex = ref(0);
 const correo = ref(localStorage.getItem("correo"));
-const appPages = [
+const isProfesor = () => {
+  return usuario.value == "super_admin"; // Simplifica el operador ternario
+};
+const appPages = computed(() => [
   {
     title: "Dashboard",
     url: "/dashboard",
@@ -102,25 +107,25 @@ const appPages = [
     title: "Usuarios",
     url: "/usuarios",
     icon: peopleOutline,
-    show: usuario == "super_admin" ? true : false,
+    show: isProfesor(),
   },
   {
     title: "Grados",
     url: "/grados",
     icon: schoolOutline,
-    show: usuario == "super_admin" ? true : false,
+    show: isProfesor(),
   },
   {
     title: "Secciones",
     url: "/secciones",
     icon: layersOutline,
-    show: usuario == "super_admin" ? true : false,
+    show: isProfesor(),
   },
   {
     title: "Profesores",
     url: "/profesores",
     icon: personOutline,
-    show: usuario == "super_admin" ? true : false,
+    show: isProfesor(),
   },
   {
     title: "Asistencia",
@@ -138,15 +143,14 @@ const appPages = [
     title: "Especialidades",
     url: "/especialidades",
     icon: briefcaseOutline,
-    show: usuario == "super_admin" ? true : false,
+    show: isProfesor(),
   },
-];
+]);
 
 const loggedIn = ref(true);
 
-const navegarRuta = (i) => {
-  selectedIndex.value = i;
-  router.push({ path: appPages[i].url });
+const navegarRuta = (page) => {
+  router.push({ path: page.url });
 };
 const loggout = () => {
   localStorage.removeItem("token");
@@ -154,13 +158,36 @@ const loggout = () => {
   loggedIn.value = false;
 };
 
-onIonViewWillEnter(() => {
-  setTimeout(() => {
+// onIonViewWillEnter(() => {
+//   console.log("se ejecuta");
+
+//   usuario.value = localStorage.getItem("username");
+//   setTimeout(() => {
+//     if (localStorage.getItem("token")) {
+//       loggedIn.value = true;
+//     }
+//   }, 1000);
+// });
+watch(
+  () => route.path,
+  (newPath, oldPath) => {
+    // console.log("Ruta cambiada a:", newPath); // <-- ¡Esto sí se ejecutará!
+
+    // Actualiza el estado reactivo del usuario (del localStorage)
+    usuario.value = localStorage.getItem("username");
+
+    // Lógica para verificar el token si es necesario
     if (localStorage.getItem("token")) {
       loggedIn.value = true;
+    } else {
+      loggedIn.value = false;
     }
-  }, 1000);
-});
+
+    // Si estás usando la Solución Reforzada (stores/auth.ts), llamarías a:
+    // updateAuthStatus();
+  },
+  { immediate: true }
+);
 </script>
 
 <style>
