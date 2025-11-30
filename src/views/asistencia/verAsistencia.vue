@@ -88,8 +88,8 @@
               color="primary"
               class="h-[60px] font-bold"
               @click="guardarAsistencia()"
-              :disabled="!v$.fecha.$model"
-              >Editar</ion-button
+              :disabled="alumnos.length == 0"
+              >Actualizar asistencia</ion-button
             >
             <ion-button
               fill="outline"
@@ -173,8 +173,14 @@ const generarHojaAsistencia = async () => {
       fecha: asistencia.value.fecha,
     });
     alumnos.value = hoja.data;
+    if (alumnos.value.length == 0) {
+      toastMessage.value = "No se encontraron alumnos.";
+      isToastOpen.value = true;
+    }
   } catch (error) {
     console.log(error);
+    toastMessage.value = "Asistencia guardada con éxito.";
+    isToastOpen.value = true;
   }
 };
 const guardarAsistencia = async () => {

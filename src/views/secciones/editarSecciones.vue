@@ -54,7 +54,7 @@
               color="primary"
               class="h-[60px] font-bold"
               @click="editarSeccion()"
-              >Crear</ion-button
+              >Editar</ion-button
             >
             <ion-button
               fill="outline"

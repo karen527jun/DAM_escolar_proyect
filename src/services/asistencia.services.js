@@ -1,8 +1,12 @@
 import network from "@/services/network.services.js";
 
 const generarHoja = async (body) => {
-  const response = await network.post("/asistencia/start", body);
-  return response;
+  try {
+    const response = await network.post("/asistencia/start", body);
+    return response;
+  } catch (error) {
+    return error;
+  }
 };
 
 const getHojas = async (body) => {

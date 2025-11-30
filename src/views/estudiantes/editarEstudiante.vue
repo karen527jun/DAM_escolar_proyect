@@ -37,6 +37,7 @@
                 placeholder="NIE"
                 type="text"
                 label="NIE"
+                disabled
               ></ion-input>
             </ion-item>
             <span
@@ -370,6 +371,7 @@ const getMatricula = async () => {
     if (res.data[0].length > 0) {
       tieneMatricula.value = true;
       seccionSeleccionada.value = res.data[0][0].id_seccion;
+      matricula.value = res.data[0][0];
     }
   } catch (error) {
     console.log(error);
@@ -398,6 +400,8 @@ const editarEstudiante = async () => {
       resMatricula = await estudiantesService.putMatricula({
         nie: estudiante.value.NIE,
         seccion: seccionSeleccionada.value,
+        id_matricula: matricula.value.id_matricula,
+        fecha_inscripcion: matricula.value.fecha_inscripcion.split("T")[0],
       });
     }
     if (res.status == 200) {

@@ -107,7 +107,7 @@
               color="primary"
               class="h-[60px] font-bold"
               @click="actualizarGrado()"
-              >Actualizar</ion-button
+              >Editar</ion-button
             >
             <ion-button
               fill="outline"

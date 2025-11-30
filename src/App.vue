@@ -158,33 +158,16 @@ const loggout = () => {
   loggedIn.value = false;
 };
 
-// onIonViewWillEnter(() => {
-//   console.log("se ejecuta");
-
-//   usuario.value = localStorage.getItem("username");
-//   setTimeout(() => {
-//     if (localStorage.getItem("token")) {
-//       loggedIn.value = true;
-//     }
-//   }, 1000);
-// });
 watch(
   () => route.path,
   (newPath, oldPath) => {
-    // console.log("Ruta cambiada a:", newPath); // <-- ¡Esto sí se ejecutará!
-
-    // Actualiza el estado reactivo del usuario (del localStorage)
     usuario.value = localStorage.getItem("username");
 
-    // Lógica para verificar el token si es necesario
     if (localStorage.getItem("token")) {
       loggedIn.value = true;
     } else {
       loggedIn.value = false;
     }
-
-    // Si estás usando la Solución Reforzada (stores/auth.ts), llamarías a:
-    // updateAuthStatus();
   },
   { immediate: true }
 );

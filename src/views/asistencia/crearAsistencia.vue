@@ -124,6 +124,7 @@
           </div>
           <div class="my-10 flex flex-col gap-5 justify-center mx-5">
             <ion-button
+              :disabled="alumnos.length == 0"
               color="primary"
               class="h-[60px] font-bold"
               @click="guardarAsistencia"
@@ -162,6 +163,7 @@ import {
   IonSelect,
   IonSelectOption,
   onIonViewWillEnter,
+  toastController,
 } from "@ionic/vue";
 import { ref, computed, watch } from "vue";
 import profesorServices from "@/services/profesor.services";
@@ -218,13 +220,31 @@ const generarHojaAsistencia = async () => {
       return;
     }
     const res = await asistenciaServices.generarHoja(asistencia.value);
-    if (res) {
+    if (res.status == 500) {
+      console.log(res);
+      let toast = await toastController.create({
+        message: "Ya existe una hoja de asistencia para la fecha ingresada",
+        duration: 2000,
+        color: "danger",
+      });
+      toast.present();
+      return;
+    }
+    if (res.status == 200) {
       const hoja = await asistenciaServices.getHojas({
         grado: asistencia.value.grado,
         seccion: asistencia.value.seccion,
         fecha: asistencia.value.fecha,
       });
       alumnos.value = hoja.data;
+      if (alumnos.value.length == 0) {
+        let toast = await toastController.create({
+          message: "No se encontraron alumnos",
+          duration: 2000,
+          color: "warning",
+        });
+        toast.present();
+      }
     }
   } catch (error) {
     console.log(error);

@@ -94,6 +94,7 @@ import {
   IonSelectOption,
 } from "@ionic/vue";
 import { Ref, ref, watch } from "vue";
+import { useRoute } from "vue-router";
 const optionsPie = ref({
   responsive: true,
   plugins: {
@@ -177,6 +178,14 @@ watch(
 onIonViewWillEnter(() => {
   getSecciones();
 });
+const route = useRoute();
+watch(
+  () => route.path,
+  (newPath, oldPath) => {
+    getSecciones();
+  },
+  { immediate: true }
+);
 </script>
 
 <style scoped>
