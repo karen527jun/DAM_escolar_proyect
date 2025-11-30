@@ -18,7 +18,6 @@
           </h1>
           <div class="flex flex-col items-center justify-center gap-10">
             <ion-button
-              v-if="isProfesor"
               class="h-[60px]"
               @click="$router.push('/crear-estudiante')"
               >Crear nuevo estudiante</ion-button
