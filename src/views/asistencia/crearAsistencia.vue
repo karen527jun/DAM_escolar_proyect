@@ -215,6 +215,7 @@ const objetoAsistenciaFinal = computed(() => {
 
 const generarHojaAsistencia = async () => {
   try {
+    alumnos.value = [];
     const validation = await v$.value.$validate();
     if (!validation) {
       return;
@@ -261,6 +262,7 @@ const guardarAsistencia = async () => {
       seccion: "",
       fecha: "",
     };
+    alumnos.value = [];
     router.push("/asistencia");
   } catch (error) {
     toastMessage.value = "Error al guardar la asistencia.";
