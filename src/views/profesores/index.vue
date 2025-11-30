@@ -220,6 +220,7 @@ const confirm = async () => {
   const res = await profesoresService.deleteProfesores(
     itemSeleccionado?.value?.id
   );
+  getData();
   if (res) {
     let toast = await toastController.create({
       message: "Se ha eliminado exitosamente",

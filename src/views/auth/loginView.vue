@@ -57,9 +57,6 @@
                   {{ value.$message }}
                 </span>
               </div>
-              <small class="text-end underline text-blue-500"
-                ><a href="">Olvide mi contraseña</a></small
-              >
               <ion-button @click="login()" color="primary" shape="round"
                 >Iniciar sesión</ion-button
               >

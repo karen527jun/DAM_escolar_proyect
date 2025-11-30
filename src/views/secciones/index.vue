@@ -181,6 +181,7 @@ const confirm = async () => {
       duration: 2000,
       color: "success",
     });
+    getSecciones();
     modal.value.$el.dismiss(name, "confirm");
     return toast.present();
   }
